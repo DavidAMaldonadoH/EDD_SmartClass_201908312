@@ -1,0 +1,8 @@
+/.vscode/
+main.exe
+pruebas.cpp
+pruebas.exe
+sources/Error.cpp
+sources/Tarea.cpp
+headers/Error.h
+headers/Tarea.h

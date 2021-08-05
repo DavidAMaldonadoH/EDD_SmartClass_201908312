@@ -2,6 +2,8 @@
 #include <iomanip>
 #include <limits>
 #include "../headers/functions.h"
+#include "../headers/ListaDC.h"
+#include "../headers/Estudiante.h"
 
 using namespace std;
 
@@ -36,7 +38,7 @@ void menuManual() {
    }
 }
 
-void menuUsuarios() {
+void menuUsuarios(ListaDC *listaEstudiantes) {
    bool menu = true;
    while(menu) {
       int opcion;
@@ -50,11 +52,52 @@ void menuUsuarios() {
       try {
          cin >> opcion;
          if (opcion == 1) {
-            cout << "ingreso" << endl;
+            string carne, DPI, nombre, carrera, password;
+            int creditos, edad;
+            printf("Carnet: ");
+            cin >> carne;
+            printf("DPI: ");
+            cin >> DPI;
+            printf("Nombre: ");
+            cin.ignore();
+            getline(cin, nombre);
+            cin.clear();
+            cin.sync();
+            printf("Carrera: ");
+            getline(cin, carrera);
+            printf("Contraseña: "); 
+            cin >> password;
+            printf("Créditos: ");
+            cin >> creditos;
+            printf("Edad: ");
+            cin >> edad;
+            Estudiante *est = new Estudiante(carne, DPI, nombre, carrera, password,
+            creditos, edad);
+            listaEstudiantes->add(est);
+            listaEstudiantes->printLista();
          } else if (opcion == 2) {
             cout << "modificar" << endl;
          } else if (opcion == 3) {
-            cout << "eliminar" << endl;
+            string id_;
+            int eliminar;
+            cout << "Ingrese el DPI del estudiante a eliminar: " << endl;
+            cin >> id_;
+            NodoDoble *tmp = listaEstudiantes->find(id_);
+            if (tmp != NULL) {
+               cout << "Esta seguro de eliminar a: " << endl;
+               tmp->printInfo();
+               cout << "Ingrese el numero:\n1. Si\n2. No\n";
+               cin >> eliminar;
+               if (eliminar == 1) {
+                  listaEstudiantes->remove(tmp->getType());
+                  cout << "Estudiante eliminado con exito!" << endl;
+               } else {
+                  cout << "No se ha eliminado al estudiante!" << endl;
+               }
+               listaEstudiantes->printLista();
+            } else {
+               cout << "El carnet ingresado no se encuentra en la lista de Estudiantes!\n";
+            }
          } else if (opcion == 4) {   
             menu = false;
          } else {
@@ -100,7 +143,7 @@ void menuTareas() {
    }
 }
 
-void ingresoManual() {
+void ingresoManual(ListaDC *listaEstudiantes) {
    bool menu = true;
    while(true) {
       int opcion;
@@ -110,7 +153,7 @@ void ingresoManual() {
          cin >> opcion;
          switch (opcion) {
          case 1:
-            menuUsuarios();
+            menuUsuarios(listaEstudiantes);
             break;
          case 2:
             menuTareas();

@@ -23,8 +23,8 @@ class NodoDoble {
       NodoDoble *getNext();
       NodoDoble *getPrevious();
 
-      //Operator Overloading
-      friend NodoDoble operator==(NodoDoble& nodo_, NodoDoble& nodo2_);
+      virtual bool isEqual(NodoDoble *nodo_);
+      virtual void printInfo();
 };
 
 #endif

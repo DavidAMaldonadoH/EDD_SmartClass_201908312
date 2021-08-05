@@ -42,6 +42,10 @@ NodoDoble *NodoDoble::getPrevious() {
    return this->previous;
 }
 
-bool operator==(NodoDoble nodo_, NodoDoble nodo2_) {
-   return nodo_.getType() == nodo2_.getType();
+bool NodoDoble::isEqual(NodoDoble *nodo_) {
+   return this->type == nodo_->getType();
+}
+
+void NodoDoble::printInfo() {
+   cout << this->type;
 }

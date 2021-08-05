@@ -1,6 +1,8 @@
 #ifndef FUNCTIONS
 #define FUNCTIONS
 
+#include "ListaDC.h"
+
 // Menu Principal
 void printMenu();
 
@@ -12,9 +14,9 @@ void cargaTareas();
 
 // Ingreso Manual
 void menuManual();
-void menuUsuarios();
+void menuUsuarios(ListaDC *listaEstudiantes);
 void menuTareas();
-void ingresoManual();
+void ingresoManual(ListaDC *listaEstudiantes);
 
 // Reportes
 void menuReportes();
