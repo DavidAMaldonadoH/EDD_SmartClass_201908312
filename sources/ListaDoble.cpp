@@ -94,6 +94,7 @@ void ListaDoble::remove(NodoDoble *nodo_){
          tmp2->setPrevious(tmp1);
          this->size--;
       }
+      delete toDelete;
    }
 }
 

@@ -30,6 +30,7 @@ NodoSimple *Cola::remove() {
       this->cabeza = this->cabeza->getNext();
       this->size--;
       return tmp;
+      delete tmp;
    }
 }
 
