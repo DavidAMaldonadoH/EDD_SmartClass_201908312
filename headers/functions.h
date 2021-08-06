@@ -14,6 +14,9 @@ void cargaTareas();
 
 // Ingreso Manual
 void menuManual();
+void modificarEstudiante(ListaDC *listaEstudiantes);
+void agregarEstudiante(ListaDC *listaEstudiantes);
+void eliminarEstudiante(ListaDC *listaEstudiantes);
 void menuUsuarios(ListaDC *listaEstudiantes);
 void menuTareas();
 void ingresoManual(ListaDC *listaEstudiantes);

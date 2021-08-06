@@ -1,7 +1,7 @@
 #include <iostream>
 #include <iomanip>
 #include <limits>
-#include <locale>
+#include <locale.h>
 #include "headers/functions.h"   
 #include "headers/ListaDC.h"
 #include "headers/Estudiante.h"
@@ -9,13 +9,13 @@
 using namespace std;
 
 int main() {
-   setlocale(LC_ALL, "Spanish");
+	setlocale(LC_ALL,"");
    bool menu = true;
    ListaDC *listaEstudiantes = new ListaDC();
    while (menu) {
       int opcion;
       printMenu();
-      cout << "Ingrese la opcion que desee: " << endl;
+      printf("Ingrese la opción que desee: ");
       try {
          cin >> opcion;
          if (opcion == 1) {
@@ -34,7 +34,7 @@ int main() {
             throw -1;
          }
       } catch(int x) {
-         cout << "Entrada invalida; por favor ingrese de nuevo una opcion!" << endl;
+         cout << "Entrada invalida; por favor ingrese de nuevo una opción!" << endl;
       }
    }
 
