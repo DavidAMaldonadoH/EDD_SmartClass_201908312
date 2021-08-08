@@ -1,7 +1,10 @@
 #include <iostream>
 #include <iomanip>
+#include <regex>
 #include "../headers/Estudiante.h"
 #include "../headers/NodoDoble.h"
+#include "../headers/Cola.h"
+#include "../headers/Error.h"
 
 using namespace std;
 
@@ -10,14 +13,15 @@ Estudiante::Estudiante() : NodoDoble() {
    this->setType("Estudiante");
 }
 
-Estudiante::Estudiante(string carne_, string DPI_, string nombre_, 
-string carrera_, string password_, int creditos_, int edad_) : NodoDoble() {
+Estudiante::Estudiante(string carne_, string DPI_, string nombre_, string carrera_, 
+string password_, string correo_, int creditos_, int edad_) : NodoDoble() {
    this->setType(DPI_);
    this->carne = carne_;
    this->DPI = DPI_;
    this->nombre = nombre_;
    this->carrera = carrera_;
    this->password = password_;
+   this->correo = correo_;
    this->creditos = creditos_;
    this->edad = edad_;
 }
@@ -41,6 +45,10 @@ string Estudiante::getCarrera() {
 
 string Estudiante::getPassword() {
    return this->password;
+}
+
+string Estudiante::getCorreo() {
+   return this->correo;
 }
 
 int Estudiante::getCreditos() {
@@ -72,6 +80,10 @@ void Estudiante::setPassword(string password_) {
    this->password = password_;
 }
 
+void Estudiante::setCorreo(string correo_) {
+   this->correo = correo_;
+}
+
 void Estudiante::setCreditos(int creditos_) {
    this->creditos = creditos_;
 }
@@ -93,4 +105,26 @@ void Estudiante::printInfo() {
    cout << '\t' << "Contraseña: " << this->password << endl;
    cout << '\t' << "Creditos: " << this->creditos << endl;
    cout << '\t' << "Edad: " << this->edad << endl;
+   cout << '\t' << "Correo: " << this->correo << endl;
+}
+
+void Estudiante::checkErrors(Cola *colaErrores) {
+   regex regDPI("^[0-9]{13}$");
+   regex regCarnet("^[0-9]{9}$");
+   regex regCorreo("^\\w+([\\.-]?\\w+)*@[a-z]+[.](com|es|org)+$");
+   if (!regex_search(this->carne, regCarnet)) {
+      string descripcion = "El Carnet del Estdudiante no presenta el formato debido.";
+      Error *err = new Error(colaErrores->getSize(), "Estudiante", this->DPI, descripcion);
+      colaErrores->add(err);
+   }
+   if (!regex_search(this->DPI, regDPI)) {
+      string descripcion = "El DPI del Estudiante no presenta el formato debido.";
+      Error *err = new Error(colaErrores->getSize(), "Estudiante", this->DPI, descripcion);
+      colaErrores->add(err);
+   }
+   if (!regex_search(this->correo, regCorreo)) {
+      string descripcion = "El Correo del Estudiante no presenta el formato debido.";
+      Error *err = new Error(colaErrores->getSize(), "Estudiante", this->DPI, descripcion);
+      colaErrores->add(err);
+   }
 }

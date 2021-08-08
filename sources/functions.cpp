@@ -1,11 +1,19 @@
 #include <iostream>
 #include <iomanip>
 #include <limits>
+#include <fstream>
 #include "../headers/functions.h"
 #include "../headers/ListaDC.h"
 #include "../headers/Estudiante.h"
-
+#include "../headers/Cola.h"
 using namespace std;
+/*
+void getFile(ifstream& file) {
+   string filePath;
+   printf("Ingrese la direccion del archivo: ");
+   cin >> filePath;
+   file.open(filePath);
+}*/
 
 // Menu Principal
 void printMenu() {
@@ -19,8 +27,32 @@ void printMenu() {
 }
 
 // Carga de Usuarios
-void cargaUsuarios() {
-   cout << '\n' << "Cargando Usuarios" << endl;
+void cargaUsuarios(ListaDC *listaEstudiantes, Cola *colaErrores) {
+   ifstream file;
+   string line, filePath;
+   printf("Ingrese la dirección del archivo: ");
+   cin >> filePath;
+   file.open(filePath);
+   while (getline(file, line)) {
+      string datos[8], tmp;
+      int comas = 0;
+      if (line != "Carnet,DPI,Nombre,Carrera,Password,Creditos,Edad,Correo") {
+         for (int i = 0; i < (int)line.size(); i++) {
+            if (line[i] != ',') {
+               tmp+=line[i];
+            } else {
+               tmp = "";
+               comas++;
+            }               
+            datos[comas] = tmp;
+         }
+         Estudiante *est = new Estudiante(datos[0], datos[1], datos[2], datos[3], datos[4], datos[7], stoi(datos[5]), stoi(datos[6]));
+         listaEstudiantes->add(est);
+         est->checkErrors(colaErrores);
+      }
+   }
+   file.close();
+   colaErrores->printCola();
 }
 
 // Carga de Tareas
@@ -48,11 +80,11 @@ void modificarEstudiante(ListaDC *listaEstudiantes) {
       string entradaS;
       int entradaI;
       tmp->printInfo();
-      printf("Que desea modificar:\n1.Carnet\n2.DPI\n3.Nombre\n4.Carrera\n5.Contraseña\n6.Créditos\n7.Edad\n");
+      printf("Que desea modificar:\n1.Carné\n2.DPI\n3.Nombre\n4.Carrera\n5.Contraseña\n6.Créditos\n7.Edad\n");
       cin >> modificar;
       switch (modificar) {
          case 1:
-            printf("Ingrese el nuevo carnet: ");
+            printf("Ingrese el nuevo carné: ");
             cin.ignore();
             getline(cin, entradaS);
             ((Estudiante*)(tmp))->setCarne(entradaS); 
@@ -83,30 +115,35 @@ void modificarEstudiante(ListaDC *listaEstudiantes) {
             ((Estudiante*)(tmp))->setPassword(entradaS); 
             break;
          case 6:
-            printf("Ingrese los creditos: ");
+            printf("Ingrese los créditos: ");
             cin.ignore();
             cin >> entradaI;
             ((Estudiante*)(tmp))->setCreditos(entradaI); 
             break;
          case 7:
-            printf("Ingrese el nuevo edad: ");
+            printf("Ingrese la nueva edad: ");
             cin.ignore();
             cin >> entradaI;
             ((Estudiante*)(tmp))->setEdad(entradaI); 
             break;
+         case 8:
+            printf("Ingrese el nuevo correo: ");
+            cin.ignore();
+            cin >> entradaS;
+            ((Estudiante*)(tmp))->setCorreo(entradaS); 
+            break;
          default:
             break;
       }
-      listaEstudiantes->printLista();
    } else {
       cout << "El carnet ingresado no se encuentra en la lista de Estudiantes!\n";
    }
 }
 
 void agregarEstudiante(ListaDC *listaEstudiantes) {
-   string carne, DPI, nombre, carrera, password;
+   string carne, DPI, nombre, carrera, password, correo;
    int creditos, edad;
-   printf("Carnet: ");
+   printf("Carné: ");
    cin >> carne;
    printf("DPI: ");
    cin >> DPI;
@@ -123,9 +160,10 @@ void agregarEstudiante(ListaDC *listaEstudiantes) {
    cin >> creditos;
    printf("Edad: ");
    cin >> edad;
-   Estudiante *est = new Estudiante(carne, DPI, nombre, carrera, password, creditos, edad);
+   printf("Correo: ");
+   cin >> correo;
+   Estudiante *est = new Estudiante(carne, DPI, nombre, carrera, password, correo, creditos, edad);
    listaEstudiantes->add(est);
-   listaEstudiantes->printLista();
 }
 
 void eliminarEstudiante(ListaDC *listaEstudiantes) {
@@ -137,7 +175,7 @@ void eliminarEstudiante(ListaDC *listaEstudiantes) {
    if (tmp != NULL) {
       cout << "Esta seguro de eliminar al ";
       tmp->printInfo();
-      cout << "Ingrese el numero:\n1. Si\n2. No\n";
+      cout << "Ingrese una opción:\n1. Si\n2. No\n";
       cin >> eliminar;
       if (eliminar == 1) {
          listaEstudiantes->remove(tmp->getType());
@@ -145,7 +183,6 @@ void eliminarEstudiante(ListaDC *listaEstudiantes) {
       } else {
          cout << "No se ha eliminado al estudiante!" << endl;
       }
-      listaEstudiantes->printLista();
    } else {
       cout << "El carnet ingresado no se encuentra en la lista de Estudiantes!\n";
    }
@@ -161,7 +198,7 @@ void menuUsuarios(ListaDC *listaEstudiantes) {
       for (string s : menuOptions) {
          cout << s << endl;
       }
-      cout << "Ingrese la opcion que desee: ";
+      cout << "\nIngrese una opción: ";
       try {
          cin >> opcion;
          if (opcion == 1) {
@@ -178,7 +215,7 @@ void menuUsuarios(ListaDC *listaEstudiantes) {
             throw -1;
          }
       } catch (int x) {
-         cout << "Entrada invalida; por favor ingrese de nuevo una opcion!" << endl;
+         cout << "Entrada inválida; por favor ingrese de nuevo una opción!" << endl;
       }
    }
 }
@@ -193,7 +230,7 @@ void menuTareas() {
       for (string s : menuOptions) {
          cout << s << endl;
       }
-      cout << '\n' <<  "Ingrese la opcion que desee: " << endl;
+      cout << "\nIngrese una opción: ";
       try {
          cin >> opcion;
          if (opcion == 1) {
@@ -210,7 +247,7 @@ void menuTareas() {
             throw -1;
          }
       } catch (int x) {
-         cout << "Entrada invalida; por favor ingrese de nuevo una opcion!" << endl;
+         cout << "Entrada inválida; por favor ingrese de nuevo una opción!" << endl;
       }
    }
 }
@@ -220,7 +257,7 @@ void ingresoManual(ListaDC *listaEstudiantes) {
    while(true) {
       int opcion;
       menuManual();
-      cout << '\n' <<  "Ingrese la opcion que desee: " << endl;
+      cout << "\nIngrese una opción: ";
       try {
          cin >> opcion;
          switch (opcion) {
@@ -241,14 +278,14 @@ void ingresoManual(ListaDC *listaEstudiantes) {
             break;
          }
       } catch (int x) {
-         cout << "Entrada invalida; por favor ingrese de nuevo una opcion!" << endl;
+         cout << "Entrada inválida; por favor ingrese de nuevo una opción!" << endl;
       }
    }
 }
 
 // Reportes
 void menuReportes() {
-   string menuOptions[3] = {"1. Lista Usuarios", "2. Linealizacion Tareas", "3. Salir"};
+   string menuOptions[3] = {"1. Lista Usuarios", "2. Linealización Tareas", "3. Salir"};
    cout << endl;
    cout << setfill('-') << setw(34) << "Reportes" << setw(27) << setfill('-')  << '\n';
    for (string s : menuOptions) {
@@ -261,7 +298,7 @@ void reportes() {
    while(menu) {
       int opcion;
       menuReportes();
-      cout << '\n' <<  "Ingrese la opcion que desee: " << endl;
+      cout << '\n' <<  "Ingrese una opción: ";
       try {
          cin >> opcion;
          switch (opcion)
@@ -283,7 +320,7 @@ void reportes() {
             break;
          }
       } catch(int x) {
-         cout << "Entrada invalida; por favor ingrese de nuevo una opcion!" << endl;
+         cout << "Entrada inválida; por favor ingrese de nuevo una opción!" << endl;
       }
    }
 }

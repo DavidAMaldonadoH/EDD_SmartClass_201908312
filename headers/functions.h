@@ -2,12 +2,13 @@
 #define FUNCTIONS
 
 #include "ListaDC.h"
+#include "Cola.h"
 
 // Menu Principal
 void printMenu();
 
 // Carga de Usuarios
-void cargaUsuarios();
+void cargaUsuarios(ListaDC *listaEstudiantes, Cola *colaErrores);
 
 // Carga de Tareas
 void cargaTareas();
