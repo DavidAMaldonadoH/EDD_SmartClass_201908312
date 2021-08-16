@@ -5,9 +5,9 @@
 #include <windows.h>
 #include "headers/functions.h"   
 #include "headers/ListaDC.h"
-#include "headers/Estudiante.h"
+#include "headers/ListaDoble.h"
+#include "headers/Tarea.h"
 #include "headers/Cola.h"
-#include "headers/Error.h"
 
 using namespace std;
 
@@ -15,19 +15,20 @@ int main() {
 	SetConsoleOutputCP(CP_UTF8);
    bool menu = true;
    ListaDC *listaEstudiantes = new ListaDC();
+   ListaDoble *listaTareas = new ListaDoble();
    Cola *colaErrores = new Cola();
    while (menu) {
       int opcion;
       printMenu();
-      printf("Ingrese la opción que desee: ");
+      printf("> Ingrese una opción: ");
       try {
          cin >> opcion;
          if (opcion == 1) {
             cargaUsuarios(listaEstudiantes, colaErrores);
          } else if (opcion == 2) {
-            cargaTareas();
+            cargaTareas(listaTareas, listaEstudiantes, colaErrores);
          } else if (opcion == 3) {
-            ingresoManual(listaEstudiantes);
+            ingresoManual(listaEstudiantes, listaTareas, colaErrores);
          } else if (opcion == 4) {
             reportes();
          } else if (opcion == 5) {
@@ -38,10 +39,10 @@ int main() {
             throw -1;
          }
       } catch(int x) {
-         cout << "Entrada inválida; por favor ingrese de nuevo una opción!" << endl;
+         cout << "> Entrada inválida; por favor ingrese de nuevo una opción!" << endl;
       }
    }
 
    return 0;
 }
-// g++ -o main.exe main.cpp sources/functions.cpp sources/ListaDC.cpp sources/Cola.cpp sources/NodoDoble.cpp sources/NodoSimple.cpp sources/Estudiante.cpp sources/Error.cpp
+//g++ -o main.exe main.cpp sources/functions.cpp sources/ListaDC.cpp sources/ListaDoble.cpp sources/Cola.cpp sources/NodoDoble.cpp sources/NodoSimple.cpp sources/Estudiante.cpp sources/Tarea.cpp sources/Error.cpp

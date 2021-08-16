@@ -3,6 +3,8 @@
 
 #include <iostream>
 #include "NodoDoble.h"
+#include "ListaDC.h"
+#include "Cola.h"
 
 class Tarea : public NodoDoble{
    private:
@@ -40,7 +42,10 @@ class Tarea : public NodoDoble{
       void setHora(std::string hora_);
       void setEstado(std::string estado_);
 
-      friend Tarea operator==(Tarea& tarea_, Tarea& tarea2_);
+      bool isEqual(Tarea *tarea_);
+      void printInfo();
+      void checkErrors(Cola *colaErrores);
+      bool inEstudiantes(ListaDC *listaEstudiantes);
 };
 
 #endif //TAREA

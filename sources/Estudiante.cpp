@@ -113,7 +113,7 @@ void Estudiante::checkErrors(Cola *colaErrores) {
    regex regCarnet("^[0-9]{9}$");
    regex regCorreo("^\\w+([\\.-]?\\w+)*@[a-z]+[.](com|es|org)+$");
    if (!regex_search(this->carne, regCarnet)) {
-      string descripcion = "El Carnet del Estdudiante no presenta el formato debido.";
+      string descripcion = "El Carnet del Estudiante no presenta el formato debido.";
       Error *err = new Error(colaErrores->getSize(), "Estudiante", this->DPI, descripcion);
       colaErrores->add(err);
    }

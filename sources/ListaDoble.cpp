@@ -17,17 +17,15 @@ int ListaDoble::getSize() {
    return this->size;
 }
 
-NodoDoble *ListaDoble::find(NodoDoble *nodo_) {
+NodoDoble *ListaDoble::find(string id_) {
    if (this->cabeza == NULL) {
       cout << "La Lista esta vacia!" << endl;
       return NULL;
    } else {
-      NodoDoble *tmp = this->cabeza;
-      while(tmp != NULL) {
-         if (nodo_ == tmp ) {
+      for (int i = 0; i < this->size; i++) {
+         NodoDoble *tmp = get(i);
+         if (id_ == tmp->getType()) {
             return tmp;
-         } else {
-            tmp = tmp->getNext();
          }
       }
       return 0;
@@ -68,11 +66,11 @@ void ListaDoble::add(NodoDoble *nodo_) {
    }
 }
 
-void ListaDoble::remove(NodoDoble *nodo_){
+void ListaDoble::remove(string id_){
    if (this->cabeza == NULL) {
       cout << "La Lista esta vacia!" << endl;
    } else {
-      NodoDoble *toDelete = this->find(nodo_);
+      NodoDoble *toDelete = this->find(id_);
       if (toDelete == this->cabeza) {
          if (this->size != 1) {
             NodoDoble *tmp = this->cabeza->getNext();
