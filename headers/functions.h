@@ -17,11 +17,11 @@ void cargaTareas(ListaDoble *listaTareas, ListaDC *listaEstudiantes, Cola *colaE
 
 // Ingreso Manual
 void menuManual();
-void modificarEstudiante(ListaDC *listaEstudiantes, Cola *colaErrores);
+void modificarEstudiante(ListaDC *listaEstudiantes, Cola *colaErrores, std::string id_);
 void agregarEstudiante(ListaDC *listaEstudiantes, Cola *colaErrores);
 void eliminarEstudiante(ListaDC *listaEstudiantes);
 void menuUsuarios(ListaDC *listaEstudiantes, Cola *colaErrores);
-void modificarTarea(ListaDoble *listaTareas, Cola *colaErrores);
+void modificarTarea(ListaDoble *listaTareas, Cola *colaErrores, std::string id_);
 void agregarTarea(ListaDoble *listaTareas, Cola *colaErrores);
 void eliminarTarea(ListaDoble *listaTareas);
 void menuTareas(ListaDoble *listaTareas, Cola *colaErrores);
@@ -29,6 +29,14 @@ void ingresoManual(ListaDC *listaEstudiantes, ListaDoble *listaTareas, Cola *col
 
 // Reportes
 void menuReportes();
-void reportes();
+void visualizarEst(ListaDC *listaEstudiantes);
+void visualizarTareas(ListaDoble *listaTareas);
+void visualizarErrores(Cola *colaErrores);
+void buscarLista(ListaDoble *listaTareas);
+void calcularPosicion();
+void reportes(ListaDC *listaEstudiantes, ListaDoble *listaTareas, Cola *colaErrores);
+
+//Errores
+void solucionarErrores(ListaDC *listaEstudiantes, ListaDoble *listaTareas, Cola *colaErrores);
 
 #endif

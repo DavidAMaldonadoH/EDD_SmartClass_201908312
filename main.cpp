@@ -30,8 +30,10 @@ int main() {
          } else if (opcion == 3) {
             ingresoManual(listaEstudiantes, listaTareas, colaErrores);
          } else if (opcion == 4) {
-            reportes();
+            reportes(listaEstudiantes, listaTareas, colaErrores);
          } else if (opcion == 5) {
+            solucionarErrores(listaEstudiantes, listaTareas, colaErrores);
+         } else if (opcion == 6) {
             menu = false;
          } else {
             cin.clear(); //Limpiar la entrada

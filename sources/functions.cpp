@@ -8,12 +8,13 @@
 #include "../headers/ListaDoble.h"
 #include "../headers/Tarea.h"
 #include "../headers/Cola.h"
+#include "../headers/Error.h"
 using namespace std;
 
 // Menu Principal
 void printMenu() {
-   string menuOptions[5] = {"1. Carga de Usuarios", "2. Carga de Tareas",
-   "3. Ingreso Manual", "4. Reportes", "5. Salir"};
+   string menuOptions[6] = {"1. Carga de Usuarios", "2. Carga de Tareas",
+   "3. Ingreso Manual", "4. Reportes", "5. Solucionar Errores", "6. Salir"};
    cout << endl;
    cout << setfill('-') << setw(36) << "Smart Class" << setw(25) << setfill('-')  << '\n';
    for (string s : menuOptions) {
@@ -131,12 +132,14 @@ void menuManual() {
    }
 }
 
-void modificarEstudiante(ListaDC *listaEstudiantes, Cola *colaErrores) {
-   string id_;
+void modificarEstudiante(ListaDC *listaEstudiantes, Cola *colaErrores, string id_ = "") {
+   string id = id_ ;
    int modificar;
-   cout << "> Ingrese el DPI del estudiante a modificar: ";
-   cin >> id_;
-   NodoDoble *tmp = listaEstudiantes->find(id_);
+   if (id_ == ""){
+      cout << "> Ingrese el DPI del estudiante a modificar: ";
+      cin >> id;
+   }
+   NodoDoble *tmp = listaEstudiantes->find(id);
    if (tmp != NULL) {
       string entradaS;
       int entradaI;
@@ -285,16 +288,19 @@ void menuUsuarios(ListaDC *listaEstudiantes, Cola *colaErrores) {
    }
 }
 
-void modificarTarea(ListaDoble *listaTareas, Cola *colaErrores) {
+void modificarTarea(ListaDoble *listaTareas, Cola *colaErrores, string id_ = "") {
+   string id = id_;
    int modificar, mes, dia, hora;
-   cout << "\n> Ingrese el Mes de la tarea que desea modificar: ";
-   cin >> mes;
-   cout << "\n> Ingrese el Dia de la tarea que desea modificar: ";
-   cin >> dia;
-   cout << "\n> Ingrese la Hora de la tarea que desea modificar: ";
-   cin >> hora;
-   string id_ = to_string((hora-8)+9*((dia-1)+30*(mes-7)));
-   NodoDoble *tmp = listaTareas->find(id_);
+   if (id_ == "") {
+      cout << "\n> Ingrese el Mes de la tarea que desea modificar: ";
+      cin >> mes;
+      cout << "\n> Ingrese el Dia de la tarea que desea modificar: ";
+      cin >> dia;
+      cout << "\n> Ingrese la Hora de la tarea que desea modificar: ";
+      cin >> hora;
+      id = to_string((hora-8)+9*((dia-1)+30*(mes-7)));
+   }
+   NodoDoble *tmp = listaTareas->find(id);
    if (tmp != NULL) {
       string entradaS;
       tmp->printInfo();
@@ -486,7 +492,8 @@ void ingresoManual(ListaDC *listaEstudiantes, ListaDoble *listaTareas, Cola *col
 
 // Reportes
 void menuReportes() {
-   string menuOptions[3] = {"1. Lista Usuarios", "2. Linealización Tareas", "3. Salir"};
+   string menuOptions[7] = {"1. Lista Usuarios", "2. Linealización Tareas", "3. Búsqueda en estructura linealizada",
+   "4. Búsqueda de posición en lista linealizada", "5. Cola de Errores", "6. Código de salida", "7. Salir"};
    cout << endl;
    cout << setfill('-') << setw(34) << "Reportes" << setw(27) << setfill('-')  << '\n';
    for (string s : menuOptions) {
@@ -494,23 +501,179 @@ void menuReportes() {
    }
 }
 
-void reportes() {
+void visualizarEst(ListaDC *listaEstudiantes) {
+   ofstream file("archivo.dot", ios::out);//abrir un archivo en forma de escritura
+   if (file.is_open()) {
+      //escribir en dot 
+      file << "digraph estudiantes {\n";
+      file << "rankdir=\"LR\";";
+      file << "\nbgcolor = \"#cbf3f0\";\nfontcolor = \"#293241\";\nlabelloc=t;\nlabel = \"Lista Estudiantes\";\nedge[color=\"#ff9f1c\"];";
+      file << "\nfontname = \"Arial\";\nfontsize = \"24.0\";";
+      file << "\nnode[shape=\"rect\" color=\"#ff9f1c\" fillcolor=\"#2ec4b6\" style=\"filled\"]";
+      for (int i = 0; i < listaEstudiantes->getSize(); i++) {
+         NodoDoble *tmp = listaEstudiantes->get(i);
+         Estudiante *aux = ((Estudiante*)(tmp));
+         if (i == 0) {
+            file << "\nnodo" << i << " -> nodo" << i+1;
+            file << "\nnodo" << i << " -> nodo" << listaEstudiantes->getSize()-1;
+            file << "\nnodo" << i << "[label=\"DPI:" << aux->getDPI() <<"\\nCarnet:" << aux->getCarne() << "\\nNombre:" << aux->getNombre();
+            file << "\\nCarrera: " << aux->getCarrera() << "\\nCorreo: " << aux->getCorreo() << "\\nContraseña: " << aux->getPassword();
+            file << "\\nCréditos: " << aux->getCreditos() << "\\nEdad: " << aux->getEdad() << "\"]";
+         } else if (i == listaEstudiantes->getSize()-1) {
+            file << "\nnodo" << i << " -> nodo" << i-1;
+            file << "\nnodo" << i << " -> nodo" << 0;
+            file << "\nnodo" << i << "[label=\"DPI:" << aux->getDPI() <<"\\nCarnet:" << aux->getCarne() << "\\nNombre:" << aux->getNombre();
+            file << "\\nCarrera: " << aux->getCarrera() << "\\nCorreo: " << aux->getCorreo() << "\\nContraseña: " << aux->getPassword();
+            file << "\\nCréditos: " << aux->getCreditos() << "\\nEdad: " << aux->getEdad() << "\"]";
+         } else {
+            file << "\nnodo" << i << " -> nodo" << i+1;
+            file << "\nnodo" << i << " -> nodo" << i-1;
+            file << "\nnodo" << i << "[label=\"DPI:" << aux->getDPI() <<"\\nCarnet:" << aux->getCarne() << "\\nNombre:" << aux->getNombre();
+            file << "\\nCarrera: " << aux->getCarrera() << "\\nCorreo: " << aux->getCorreo() << "\\nContraseña: " << aux->getPassword();
+            file << "\\nCréditos: " << aux->getCreditos() << "\\nEdad: " << aux->getEdad() << "\"]";
+         }
+      }
+      file << "\n}";
+      file.close();
+      system("dot -Nfontname=Arial -Tpng archivo.dot -o Img/estudiantes.png");
+      cout << "\n> Archivo generado exitosamente!\n";
+   } else {
+      cout << "\n> Algo salió mal!";
+   }
+}
+
+void visualizarTareas(ListaDoble *listaTareas) {
+   ofstream file("archivo.dot", ios::out);//abrir un archivo en forma de escritura
+   if (file.is_open()) {
+      //escribir en dot 
+      file << "digraph tareas {\n";
+      file << "rankdir=\"LR\";\n";
+      file << "bgcolor = \"#caf0f8\";\nfontcolor = \"#03045e\";\nlabelloc=t;\nlabel = \"Lista Tareas\";\nedge[color=\"#03045e\"];";
+      file << "\nfontname = \"Arial\";\nfontsize = \"24.0\";";
+      file << "\nnode[shape=\"rect\" color=\"#03045e\" fillcolor=\"#48cae4\" style=\"filled\"]";
+      int c = 0;
+      for (int i = 0; i < listaTareas->getSize(); i++) {
+         NodoDoble *tmp = listaTareas->get(i);
+         Tarea *aux = ((Tarea*)(tmp));
+         if (aux->getNombre() != "-1") {
+            if (i == 0) {
+               file << "\nnodo" << c << " -> nodo" << c+1;
+               file << "\nnodo" << c << "[label=\"ID:" << aux->getId() <<"\\nCarnet:" << aux->getCarne() << "\\nNombre:" << aux->getNombre();
+               file << "\\nDescripción: " << aux->getDescripcion() << "\\nMateria: " << aux->getMateria() << "\\nFecha: " << aux->getFecha();
+               file << "\\nHora: " << aux->getHora() << ":00\\nEstado: " << aux->getEstado() << "\"]";
+            } else if (i == listaTareas->getSize()-1) {
+               file << "\nnodo" << c << " -> nodo" << c-1;
+               file << "\nnodo" << c << "[label=\"ID:" << aux->getId() <<"\\nCarnet:" << aux->getCarne() << "\\nNombre:" << aux->getNombre();
+               file << "\\nDescripción: " << aux->getDescripcion() << "\\nMateria: " << aux->getMateria() << "\\nFecha: " << aux->getFecha();
+               file << "\\nHora: " << aux->getHora() << ":00\\nEstado: " << aux->getEstado() << "'\"]";
+            } else {
+               file << "\nnodo" << c << " -> nodo" << c+1;
+               file << "\nnodo" << c << " -> nodo" << c-1;
+               file << "\nnodo" << c << "[label=\"ID:" << aux->getId() <<"\\nCarnet:" << aux->getCarne() << "\\nNombre:" << aux->getNombre();
+               file << "\\nDescripción: " << aux->getDescripcion() << "\\nMateria: " << aux->getMateria() << "\\nFecha: " << aux->getFecha();
+               file << "\\nHora: " << aux->getHora() << ":00\\nEstado: " << aux->getEstado() << "\"]";
+            }
+            c++;
+         }
+      }
+      file << "\n}";
+      file.close();
+      system("dot -Nfontname=Arial -Tpng archivo.dot -o Img/tareas.png");
+      cout << "\n> Archivo generado exitosamente!\n";
+   } else {
+      cout << "\n> Algo salió mal!";
+   }
+}
+
+void visualizarErrores(Cola *colaErrores) {
+   ofstream file("archivo.dot", ios::out);//abrir un archivo en forma de escritura
+   if (file.is_open()) {
+      //escribir en dot 
+      file << "digraph estudiantes {\n";
+      file << "rankdir=\"LR\";";
+      file << "\nbgcolor = \"#ffccd5\";\nfontcolor = \"#293241\";\nlabelloc=t;\nlabel = \"Cola Errores\";\nedge[color=\"#800f2f\"];";
+      file << "\nfontname = \"Arial\";\nfontsize = \"24.0\";";
+      file << "\nnode[shape=\"rect\" color=\"#800f2f\" fillcolor=\"#ff6b6b\" style=\"filled\"]";
+      NodoSimple *tmp = colaErrores->peek();
+      file << "nodo0 -> Salida";
+      for (int i = 0; i < colaErrores->getSize(); i++) {
+         Error *aux = ((Error*)(tmp));
+         if (i == colaErrores->getSize()-1) {
+            file << "\nnodo" << i << "[label=\"ID: " << aux->getId()+1 <<"\\nTipo: " << aux->getTipo() << "\\nOrigen: " << aux->getOrigen();
+            file << "\\nDescripción: " << aux->getDescripcion() << "\"]";
+            file << "Entrada -> nodo" << i;
+         } else {
+            file << "\nnodo" << i + 1 << " -> nodo" << i;
+            file << "\nnodo" << i << "[label=\"ID: " << aux->getId()+1 <<"\\nTipo: " << aux->getTipo() << "\\nOrigen: " << aux->getOrigen();
+            file << "\\nDescripción: " << aux->getDescripcion() << "\"]";
+         }
+         tmp = tmp->getNext();
+      }
+      file << "\n}";
+      file.close();
+      system("dot -Nfontname=Arial -Tpng archivo.dot -o Img/errores.png");
+      cout << "\n> Archivo generado exitosamente!\n";
+   } else {
+      cout << "\n> Algo salió mal!";
+   }
+}
+
+void buscarLista(ListaDoble *listaTareas) {
+   int mes, dia, hora;
+   cout << "\n> Ingrese el Mes de la tarea que desea modificar: ";
+   cin >> mes;
+   cout << "\n> Ingrese el Dia de la tarea que desea modificar: ";
+   cin >> dia;
+   cout << "\n> Ingrese la Hora de la tarea que desea modificar: ";
+   cin >> hora;
+   int id_ = (hora-8)+9*((dia-1)+30*(mes-7));
+   NodoDoble *tmp = listaTareas->find(to_string(id_));
+   if (tmp != NULL) 
+      tmp->printInfo();
+   else 
+      cout << "> El id ingresado no se encuentra en la lista de Tareas!\n";
+}
+
+void calcularPosicion() {
+   int mes, dia, hora;
+   cout << "\n> Ingrese el Mes de la posición que desea buscar: ";
+   cin >> mes;
+   cout << "\n> Ingrese el Dia de la posición que desea buscar: ";
+   cin >> dia;
+   cout << "\n> Ingrese la Hora de la posición que desea buscar: ";
+   cin >> hora;
+   int posicion = (hora-8)+9*((dia-1)+30*(mes-7)); 
+   cout << "La posición en la estructura linealizada sería: " << posicion << endl;
+}
+
+void reportes(ListaDC *listaEstudiantes, ListaDoble *listaTareas, Cola *colaErrores) {
    bool menu = true;
    while(menu) {
       int opcion;
       menuReportes();
-      cout << "Ingrese una opción: ";
+      cout << "> Ingrese una opción: ";
       try {
          cin >> opcion;
          switch (opcion)
          {
-         case 1:
-            cout << "Lista Ususarios" << endl;
+         case 1://Lista de Usuarios
+            visualizarEst(listaEstudiantes);
             break;
-         case 2:
-            cout << "Linealizacion Tareas" << endl;
+         case 2://Lista de Tareas
+            visualizarTareas(listaTareas);
             break;
-         case 3:
+         case 3://Busqueda en lista doblemente enlazada
+            buscarLista(listaTareas);
+            break;
+         case 4://Calculo de posicion segun mes dia y hora
+            calcularPosicion();
+            break;
+         case 5://Cola de Errores
+            visualizarErrores(colaErrores);
+            break;
+         case 6://Archivo de salida
+            break;
+         case 7:
             menu = false;
             return;
             break;
@@ -523,5 +686,31 @@ void reportes() {
       } catch(int x) {
          cout << "\n> Entrada inválida; por favor ingrese de nuevo una opción!" << endl;
       }
+   }
+}
+
+//Errores
+void solucionarErrores(ListaDC *listaEstudiantes, ListaDoble *listaTareas, Cola *colaErrores) {
+   bool solucionar = true, continuar = true;
+   int vueltas = 0, x;
+   while (solucionar) {
+      if (vueltas != 0) {
+         cout << "\n> Desea continuar:\n1. Si\n2. No ";
+         cin >> x;
+         if (x == 2)
+            continuar = false;
+      }
+      if (colaErrores->isEmpty() | !continuar) {
+         solucionar = false;
+         break;
+      }
+      NodoSimple *tmpError = colaErrores->remove();
+      cout << "\n> Descripción: " << ((Error*)(tmpError))->getDescripcion() << '\n';
+      if (((Error*)(tmpError))->getTipo() == "Estudiante") {
+         modificarEstudiante(listaEstudiantes, colaErrores, ((Error*)(tmpError))->getOrigen());
+      } else {
+         modificarTarea(listaTareas, colaErrores, ((Error*)(tmpError))->getOrigen());
+      }
+      vueltas++;
    }
 }
