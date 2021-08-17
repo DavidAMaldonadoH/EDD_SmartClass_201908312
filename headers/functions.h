@@ -34,6 +34,7 @@ void visualizarTareas(ListaDoble *listaTareas);
 void visualizarErrores(Cola *colaErrores);
 void buscarLista(ListaDoble *listaTareas);
 void calcularPosicion();
+void generarSalida(ListaDC *listaEstudiantes, ListaDoble *listaTareas, Cola *colaErrores);
 void reportes(ListaDC *listaEstudiantes, ListaDoble *listaTareas, Cola *colaErrores);
 
 //Errores

@@ -2,6 +2,7 @@
 #include <iomanip>
 #include <limits>
 #include <fstream>
+#include <stdlib.h>
 #include "../headers/functions.h"
 #include "../headers/ListaDC.h"
 #include "../headers/Estudiante.h"
@@ -535,7 +536,10 @@ void visualizarEst(ListaDC *listaEstudiantes) {
       }
       file << "\n}";
       file.close();
-      system("dot -Nfontname=Arial -Tpng archivo.dot -o Img/estudiantes.png");
+      int x = rand() % 100 + 1; 
+      string cadena = "dot -Nfontname=Arial -Tsvg archivo.dot -o Img/estudiantes_" + to_string(x) + ".svg";
+      const char *command = cadena.c_str();
+      system(command);
       cout << "\n> Archivo generado exitosamente!\n";
    } else {
       cout << "\n> Algo salió mal!";
@@ -551,34 +555,33 @@ void visualizarTareas(ListaDoble *listaTareas) {
       file << "bgcolor = \"#caf0f8\";\nfontcolor = \"#03045e\";\nlabelloc=t;\nlabel = \"Lista Tareas\";\nedge[color=\"#03045e\"];";
       file << "\nfontname = \"Arial\";\nfontsize = \"24.0\";";
       file << "\nnode[shape=\"rect\" color=\"#03045e\" fillcolor=\"#48cae4\" style=\"filled\"]";
-      int c = 0;
       for (int i = 0; i < listaTareas->getSize(); i++) {
          NodoDoble *tmp = listaTareas->get(i);
          Tarea *aux = ((Tarea*)(tmp));
-         if (aux->getNombre() != "-1") {
-            if (i == 0) {
-               file << "\nnodo" << c << " -> nodo" << c+1;
-               file << "\nnodo" << c << "[label=\"ID:" << aux->getId() <<"\\nCarnet:" << aux->getCarne() << "\\nNombre:" << aux->getNombre();
-               file << "\\nDescripción: " << aux->getDescripcion() << "\\nMateria: " << aux->getMateria() << "\\nFecha: " << aux->getFecha();
-               file << "\\nHora: " << aux->getHora() << ":00\\nEstado: " << aux->getEstado() << "\"]";
-            } else if (i == listaTareas->getSize()-1) {
-               file << "\nnodo" << c << " -> nodo" << c-1;
-               file << "\nnodo" << c << "[label=\"ID:" << aux->getId() <<"\\nCarnet:" << aux->getCarne() << "\\nNombre:" << aux->getNombre();
-               file << "\\nDescripción: " << aux->getDescripcion() << "\\nMateria: " << aux->getMateria() << "\\nFecha: " << aux->getFecha();
-               file << "\\nHora: " << aux->getHora() << ":00\\nEstado: " << aux->getEstado() << "'\"]";
-            } else {
-               file << "\nnodo" << c << " -> nodo" << c+1;
-               file << "\nnodo" << c << " -> nodo" << c-1;
-               file << "\nnodo" << c << "[label=\"ID:" << aux->getId() <<"\\nCarnet:" << aux->getCarne() << "\\nNombre:" << aux->getNombre();
-               file << "\\nDescripción: " << aux->getDescripcion() << "\\nMateria: " << aux->getMateria() << "\\nFecha: " << aux->getFecha();
-               file << "\\nHora: " << aux->getHora() << ":00\\nEstado: " << aux->getEstado() << "\"]";
-            }
-            c++;
+         if (i == 0) {
+            file << "\nnodo" << i << " -> nodo" << i+1;
+            file << "\nnodo" << i << "[label=\"ID:" << aux->getId() <<"\\nCarnet:" << aux->getCarne() << "\\nNombre:" << aux->getNombre();
+            file << "\\nDescripción: " << aux->getDescripcion() << "\\nMateria: " << aux->getMateria() << "\\nFecha: " << aux->getFecha();
+            file << "\\nHora: " << aux->getHora() << ":00\\nEstado: " << aux->getEstado() << "\"]";
+         } else if (i == listaTareas->getSize()-1) {
+            file << "\nnodo" << i << " -> nodo" << i-1;
+            file << "\nnodo" << i << "[label=\"ID:" << aux->getId() <<"\\nCarnet:" << aux->getCarne() << "\\nNombre:" << aux->getNombre();
+            file << "\\nDescripción: " << aux->getDescripcion() << "\\nMateria: " << aux->getMateria() << "\\nFecha: " << aux->getFecha();
+            file << "\\nHora: " << aux->getHora() << ":00\\nEstado: " << aux->getEstado() << "'\"]";
+         } else {
+            file << "\nnodo" << i << " -> nodo" << i+1;
+            file << "\nnodo" << i << " -> nodo" << i-1;
+            file << "\nnodo" << i << "[label=\"ID:" << aux->getId() <<"\\nCarnet:" << aux->getCarne() << "\\nNombre:" << aux->getNombre();
+            file << "\\nDescripción: " << aux->getDescripcion() << "\\nMateria: " << aux->getMateria() << "\\nFecha: " << aux->getFecha();
+            file << "\\nHora: " << aux->getHora() << ":00\\nEstado: " << aux->getEstado() << "\"]";
          }
       }
       file << "\n}";
       file.close();
-      system("dot -Nfontname=Arial -Tpng archivo.dot -o Img/tareas.png");
+      int x = rand() % 100 + 1; 
+      string cadena = "dot -Nfontname=Arial -Tsvg archivo.dot -o Img/tareas_" + to_string(x) + ".svg";
+      const char *command = cadena.c_str();
+      system(command);
       cout << "\n> Archivo generado exitosamente!\n";
    } else {
       cout << "\n> Algo salió mal!";
@@ -611,7 +614,10 @@ void visualizarErrores(Cola *colaErrores) {
       }
       file << "\n}";
       file.close();
-      system("dot -Nfontname=Arial -Tpng archivo.dot -o Img/errores.png");
+      int x = rand() % 100 + 1; 
+      string cadena = "dot -Nfontname=Arial -Tsvg archivo.dot -o Img/errores_" + to_string(x) + ".svg";
+      const char *command = cadena.c_str();
+      system(command);
       cout << "\n> Archivo generado exitosamente!\n";
    } else {
       cout << "\n> Algo salió mal!";
@@ -646,6 +652,51 @@ void calcularPosicion() {
    cout << "La posición en la estructura linealizada sería: " << posicion << endl;
 }
 
+void generarSalida(ListaDC *listaEstudiantes, ListaDoble *listaTareas, Cola *colaErrores) {
+   if (colaErrores->isEmpty()) {
+      ofstream file("salida.txt", ios::out);//abrir un archivo en forma de escritura
+      if (file.is_open()) { 
+         file << "¿Elements?\n";
+         for (int i = 0; i < listaEstudiantes->getSize(); i++) {
+            NodoDoble *tmp = listaEstudiantes->get(i);
+            Estudiante *aux = ((Estudiante*)(tmp));
+            file << "\t¿element type=\"user\"?\n";
+            file << "\t\t¿item Carnet = \"" << aux->getCarne() << "\"$?\n";
+            file << "\t\t¿item DPI = \"" << aux->getDPI() << "\"$?\n";
+            file << "\t\t¿item Nombre = \"" << aux->getNombre() << "\"$?\n";
+            file << "\t\t¿item Carrera = \"" << aux->getCarrera() << "\"$?\n";
+            file << "\t\t¿item Password = \"" << aux->getPassword() << "\"$?\n";
+            file << "\t\t¿item Creditos = "<< aux->getCreditos() << " $?\n";
+            file << "\t\t¿item Edad = " << aux->getEdad() << " $?\n";
+            file << "\t¿$element?\n";
+         }
+         for (int i = 0; i < listaTareas->getSize(); i++) {
+            NodoDoble *tmp = listaTareas->get(i);
+            Tarea *aux = ((Tarea*)(tmp));
+            if (aux->getNombre() != "-1")
+            {
+               file << "\t¿element type=\"task\"?\n";
+               file << "\t\t¿item Carnet = \"" << aux->getCarne() << "\" $?\n";
+               file << "\t\t¿item Nombre = \"" << aux->getNombre() << "\" $?\n";
+               file << "\t\t¿item Descripcion = \"" << aux->getDescripcion() << "\" $?\n";
+               file << "\t\t¿item Materia = \"" << aux->getMateria() << "\" $?\n";
+               file << "\t\t¿item Fecha = \"" << aux->getFecha() << "\" $?\n";
+               file << "\t\t¿item Hora = \"" << aux->getHora() << ":00\" $?\n";
+               file << "\t\t¿item Estado = \"" << aux->getEstado() << "\" $?\n";
+               file << "\t¿$element?\n";
+            }
+         }
+         file << "¿$Elements?";
+         file.close();
+         cout << "\n> Archivo generado exitosamente!\n";
+      } else {
+      cout << "\n> Algo salió mal!";
+   }
+   } else {
+      cout << "\nLos datos ingresados aun poseen erroes, corrijalos antes de generar el archivo!.\n";
+   }
+}
+
 void reportes(ListaDC *listaEstudiantes, ListaDoble *listaTareas, Cola *colaErrores) {
    bool menu = true;
    while(menu) {
@@ -672,6 +723,7 @@ void reportes(ListaDC *listaEstudiantes, ListaDoble *listaTareas, Cola *colaErro
             visualizarErrores(colaErrores);
             break;
          case 6://Archivo de salida
+            generarSalida(listaEstudiantes, listaTareas, colaErrores);
             break;
          case 7:
             menu = false;
