@@ -117,13 +117,13 @@ void Estudiante::checkErrors(Cola *colaErrores) {
       Error *err = new Error(colaErrores->getSize(), "Estudiante", this->DPI, descripcion);
       colaErrores->add(err);
    }
-   if (!regex_search(this->DPI, regDPI)) {
-      string descripcion = "El DPI del Estudiante no presenta el formato debido.";
+   if (!regex_search(this->correo, regCorreo)) {
+      string descripcion = "El Correo del Estudiante no presenta el formato debido.";
       Error *err = new Error(colaErrores->getSize(), "Estudiante", this->DPI, descripcion);
       colaErrores->add(err);
    }
-   if (!regex_search(this->correo, regCorreo)) {
-      string descripcion = "El Correo del Estudiante no presenta el formato debido.";
+   if (!regex_search(this->DPI, regDPI)) {
+      string descripcion = "El DPI del Estudiante no presenta el formato debido.";
       Error *err = new Error(colaErrores->getSize(), "Estudiante", this->DPI, descripcion);
       colaErrores->add(err);
    }
