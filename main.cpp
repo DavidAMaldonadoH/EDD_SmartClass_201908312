@@ -13,6 +13,7 @@ using namespace std;
 
 int main() {
 	SetConsoleOutputCP(CP_UTF8);
+   setlocale(LC_ALL, "es_ES");
    bool menu = true;
    ListaDC *listaEstudiantes = new ListaDC();
    ListaDoble *listaTareas = new ListaDoble();

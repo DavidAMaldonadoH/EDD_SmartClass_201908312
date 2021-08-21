@@ -2,7 +2,8 @@
 #include <iomanip>
 #include <limits>
 #include <fstream>
-#include <stdlib.h>
+#include <cstdlib>
+#include <ctime>
 #include "../headers/functions.h"
 #include "../headers/ListaDC.h"
 #include "../headers/Estudiante.h"
@@ -28,7 +29,7 @@ void cargaUsuarios(ListaDC *listaEstudiantes, Cola *colaErrores) {
    ifstream file;
    string line, filePath;
    printf("> Ingrese la dirección del archivo: ");
-   cin >> filePath;
+   getline(cin>>ws, filePath);
    file.open(filePath);
    if (!file.fail()) {
       while (getline(file, line)) {
@@ -74,7 +75,7 @@ void cargaTareas(ListaDoble *listaTareas, ListaDC *listaEstudiantes, Cola *colaE
    ifstream file;
    string line, filePath;
    printf("> Ingrese la dirección del archivo: ");
-   cin >> filePath;
+   getline(cin>>ws, filePath);
    file.open(filePath, ios::in);
    if (!file.fail()) {
       while (getline(file, line)) {
@@ -536,6 +537,7 @@ void visualizarEst(ListaDC *listaEstudiantes) {
       }
       file << "\n}";
       file.close();
+      srand(time(0));
       int x = rand() % 100 + 1; 
       string cadena = "dot -Nfontname=Arial -Tsvg archivo.dot -o Img/estudiantes_" + to_string(x) + ".svg";
       const char *command = cadena.c_str();
@@ -578,6 +580,7 @@ void visualizarTareas(ListaDoble *listaTareas) {
       }
       file << "\n}";
       file.close();
+      srand(time(0));
       int x = rand() % 100 + 1; 
       string cadena = "dot -Nfontname=Arial -Tsvg archivo.dot -o Img/tareas_" + to_string(x) + ".svg";
       const char *command = cadena.c_str();
@@ -614,7 +617,8 @@ void visualizarErrores(Cola *colaErrores) {
       }
       file << "\n}";
       file.close();
-      int x = rand() % 100 + 1; 
+      srand(time(0));
+      int x = rand() % 100 + 1;  
       string cadena = "dot -Nfontname=Arial -Tsvg archivo.dot -o Img/errores_" + to_string(x) + ".svg";
       const char *command = cadena.c_str();
       system(command);
