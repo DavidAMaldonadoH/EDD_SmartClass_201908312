@@ -31,11 +31,12 @@ void cargaUsuarios(ListaDC *listaEstudiantes, Cola *colaErrores) {
    printf("> Ingrese la dirección del archivo: ");
    getline(cin>>ws, filePath);
    file.open(filePath);
+   int nline = 0;
    if (!file.fail()) {
       while (getline(file, line)) {
          string datos[8], tmp;
          int comas = 0;
-         if (line != "Carnet,DPI,Nombre,Carrera,Password,Creditos,Edad,Correo") {
+         if (nline != 0) {
             for (int i = 0; i < (int)line.size(); i++) {
                if (line[i] != ',') {
                   tmp+=line[i];
@@ -49,6 +50,7 @@ void cargaUsuarios(ListaDC *listaEstudiantes, Cola *colaErrores) {
             listaEstudiantes->add(est);
             est->checkErrors(colaErrores);
          }
+         nline++;
       }
       cout << "\n> Archivo cargado con éxito!\n";
    } else {
@@ -77,11 +79,12 @@ void cargaTareas(ListaDoble *listaTareas, ListaDC *listaEstudiantes, Cola *colaE
    printf("> Ingrese la dirección del archivo: ");
    getline(cin>>ws, filePath);
    file.open(filePath, ios::in);
+   int nline = 0;
    if (!file.fail()) {
       while (getline(file, line)) {
          string datos[9], tmp;
          int comas = 0;
-         if (line != "Mes,Dia,Hora,Carnet,Nombre,Descripcion,Materia,Fecha,Estado") {
+         if (nline != 0) {
             for (int i = 0; i < (int)line.size(); i++) {
                if (line[i] != ',') {
                   tmp+=line[i];
@@ -108,6 +111,7 @@ void cargaTareas(ListaDoble *listaTareas, ListaDC *listaEstudiantes, Cola *colaE
                }
             }
          }
+         nline++;
       }
       cout << "\n> Archivo cargado con éxito!\n";
    } else {
@@ -569,7 +573,7 @@ void visualizarTareas(ListaDoble *listaTareas) {
             file << "\nnodo" << i << " -> nodo" << i-1;
             file << "\nnodo" << i << "[label=\"ID:" << aux->getId() <<"\\nCarnet:" << aux->getCarne() << "\\nNombre:" << aux->getNombre();
             file << "\\nDescripción: " << aux->getDescripcion() << "\\nMateria: " << aux->getMateria() << "\\nFecha: " << aux->getFecha();
-            file << "\\nHora: " << aux->getHora() << ":00\\nEstado: " << aux->getEstado() << "'\"]";
+            file << "\\nHora: " << aux->getHora() << ":00\\nEstado: " << aux->getEstado() << "\"]";
          } else {
             file << "\nnodo" << i << " -> nodo" << i+1;
             file << "\nnodo" << i << " -> nodo" << i-1;
