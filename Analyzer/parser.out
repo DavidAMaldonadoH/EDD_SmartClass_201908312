@@ -1,0 +1,312 @@
+Created by PLY version 3.11 (http://www.dabeaz.com/ply)
+
+Grammar
+
+Rule 0     S' -> init
+Rule 1     init -> LQUESTION ELEMENTS RQUESTION elementos LQUESTION DOLAR ELEMENTS RQUESTION
+Rule 2     elementos -> elementos elemento
+Rule 3     elementos -> elemento
+Rule 4     elemento -> LQUESTION ELEMENT TYPE IGUAL CADENA RQUESTION datos LQUESTION DOLAR ELEMENT RQUESTION
+Rule 5     datos -> datos dato
+Rule 6     datos -> dato
+Rule 7     dato -> LQUESTION ITEM ID IGUAL CADENA DOLAR RQUESTION
+Rule 8     dato -> LQUESTION ITEM ID IGUAL ENTERO DOLAR RQUESTION
+
+Terminals, with rules where they appear
+
+CADENA               : 4 7
+DOLAR                : 1 4 7 8
+ELEMENT              : 4 4
+ELEMENTS             : 1 1
+ENTERO               : 8
+ID                   : 7 8
+IGUAL                : 4 7 8
+ITEM                 : 7 8
+LQUESTION            : 1 1 4 4 7 8
+RQUESTION            : 1 1 4 4 7 8
+TYPE                 : 4
+error                : 
+
+Nonterminals, with rules where they appear
+
+dato                 : 5 6
+datos                : 4 5
+elemento             : 2 3
+elementos            : 1 2
+init                 : 0
+
+Parsing method: LALR
+
+state 0
+
+    (0) S' -> . init
+    (1) init -> . LQUESTION ELEMENTS RQUESTION elementos LQUESTION DOLAR ELEMENTS RQUESTION
+
+    LQUESTION       shift and go to state 2
+
+    init                           shift and go to state 1
+
+state 1
+
+    (0) S' -> init .
+
+
+
+state 2
+
+    (1) init -> LQUESTION . ELEMENTS RQUESTION elementos LQUESTION DOLAR ELEMENTS RQUESTION
+
+    ELEMENTS        shift and go to state 3
+
+
+state 3
+
+    (1) init -> LQUESTION ELEMENTS . RQUESTION elementos LQUESTION DOLAR ELEMENTS RQUESTION
+
+    RQUESTION       shift and go to state 4
+
+
+state 4
+
+    (1) init -> LQUESTION ELEMENTS RQUESTION . elementos LQUESTION DOLAR ELEMENTS RQUESTION
+    (2) elementos -> . elementos elemento
+    (3) elementos -> . elemento
+    (4) elemento -> . LQUESTION ELEMENT TYPE IGUAL CADENA RQUESTION datos LQUESTION DOLAR ELEMENT RQUESTION
+
+    LQUESTION       shift and go to state 5
+
+    elementos                      shift and go to state 6
+    elemento                       shift and go to state 7
+
+state 5
+
+    (4) elemento -> LQUESTION . ELEMENT TYPE IGUAL CADENA RQUESTION datos LQUESTION DOLAR ELEMENT RQUESTION
+
+    ELEMENT         shift and go to state 8
+
+
+state 6
+
+    (1) init -> LQUESTION ELEMENTS RQUESTION elementos . LQUESTION DOLAR ELEMENTS RQUESTION
+    (2) elementos -> elementos . elemento
+    (4) elemento -> . LQUESTION ELEMENT TYPE IGUAL CADENA RQUESTION datos LQUESTION DOLAR ELEMENT RQUESTION
+
+    LQUESTION       shift and go to state 9
+
+    elemento                       shift and go to state 10
+
+state 7
+
+    (3) elementos -> elemento .
+
+    LQUESTION       reduce using rule 3 (elementos -> elemento .)
+
+
+state 8
+
+    (4) elemento -> LQUESTION ELEMENT . TYPE IGUAL CADENA RQUESTION datos LQUESTION DOLAR ELEMENT RQUESTION
+
+    TYPE            shift and go to state 11
+
+
+state 9
+
+    (1) init -> LQUESTION ELEMENTS RQUESTION elementos LQUESTION . DOLAR ELEMENTS RQUESTION
+    (4) elemento -> LQUESTION . ELEMENT TYPE IGUAL CADENA RQUESTION datos LQUESTION DOLAR ELEMENT RQUESTION
+
+    DOLAR           shift and go to state 12
+    ELEMENT         shift and go to state 8
+
+
+state 10
+
+    (2) elementos -> elementos elemento .
+
+    LQUESTION       reduce using rule 2 (elementos -> elementos elemento .)
+
+
+state 11
+
+    (4) elemento -> LQUESTION ELEMENT TYPE . IGUAL CADENA RQUESTION datos LQUESTION DOLAR ELEMENT RQUESTION
+
+    IGUAL           shift and go to state 13
+
+
+state 12
+
+    (1) init -> LQUESTION ELEMENTS RQUESTION elementos LQUESTION DOLAR . ELEMENTS RQUESTION
+
+    ELEMENTS        shift and go to state 14
+
+
+state 13
+
+    (4) elemento -> LQUESTION ELEMENT TYPE IGUAL . CADENA RQUESTION datos LQUESTION DOLAR ELEMENT RQUESTION
+
+    CADENA          shift and go to state 15
+
+
+state 14
+
+    (1) init -> LQUESTION ELEMENTS RQUESTION elementos LQUESTION DOLAR ELEMENTS . RQUESTION
+
+    RQUESTION       shift and go to state 16
+
+
+state 15
+
+    (4) elemento -> LQUESTION ELEMENT TYPE IGUAL CADENA . RQUESTION datos LQUESTION DOLAR ELEMENT RQUESTION
+
+    RQUESTION       shift and go to state 17
+
+
+state 16
+
+    (1) init -> LQUESTION ELEMENTS RQUESTION elementos LQUESTION DOLAR ELEMENTS RQUESTION .
+
+    $end            reduce using rule 1 (init -> LQUESTION ELEMENTS RQUESTION elementos LQUESTION DOLAR ELEMENTS RQUESTION .)
+
+
+state 17
+
+    (4) elemento -> LQUESTION ELEMENT TYPE IGUAL CADENA RQUESTION . datos LQUESTION DOLAR ELEMENT RQUESTION
+    (5) datos -> . datos dato
+    (6) datos -> . dato
+    (7) dato -> . LQUESTION ITEM ID IGUAL CADENA DOLAR RQUESTION
+    (8) dato -> . LQUESTION ITEM ID IGUAL ENTERO DOLAR RQUESTION
+
+    LQUESTION       shift and go to state 18
+
+    datos                          shift and go to state 19
+    dato                           shift and go to state 20
+
+state 18
+
+    (7) dato -> LQUESTION . ITEM ID IGUAL CADENA DOLAR RQUESTION
+    (8) dato -> LQUESTION . ITEM ID IGUAL ENTERO DOLAR RQUESTION
+
+    ITEM            shift and go to state 21
+
+
+state 19
+
+    (4) elemento -> LQUESTION ELEMENT TYPE IGUAL CADENA RQUESTION datos . LQUESTION DOLAR ELEMENT RQUESTION
+    (5) datos -> datos . dato
+    (7) dato -> . LQUESTION ITEM ID IGUAL CADENA DOLAR RQUESTION
+    (8) dato -> . LQUESTION ITEM ID IGUAL ENTERO DOLAR RQUESTION
+
+    LQUESTION       shift and go to state 22
+
+    dato                           shift and go to state 23
+
+state 20
+
+    (6) datos -> dato .
+
+    LQUESTION       reduce using rule 6 (datos -> dato .)
+
+
+state 21
+
+    (7) dato -> LQUESTION ITEM . ID IGUAL CADENA DOLAR RQUESTION
+    (8) dato -> LQUESTION ITEM . ID IGUAL ENTERO DOLAR RQUESTION
+
+    ID              shift and go to state 24
+
+
+state 22
+
+    (4) elemento -> LQUESTION ELEMENT TYPE IGUAL CADENA RQUESTION datos LQUESTION . DOLAR ELEMENT RQUESTION
+    (7) dato -> LQUESTION . ITEM ID IGUAL CADENA DOLAR RQUESTION
+    (8) dato -> LQUESTION . ITEM ID IGUAL ENTERO DOLAR RQUESTION
+
+    DOLAR           shift and go to state 25
+    ITEM            shift and go to state 21
+
+
+state 23
+
+    (5) datos -> datos dato .
+
+    LQUESTION       reduce using rule 5 (datos -> datos dato .)
+
+
+state 24
+
+    (7) dato -> LQUESTION ITEM ID . IGUAL CADENA DOLAR RQUESTION
+    (8) dato -> LQUESTION ITEM ID . IGUAL ENTERO DOLAR RQUESTION
+
+    IGUAL           shift and go to state 26
+
+
+state 25
+
+    (4) elemento -> LQUESTION ELEMENT TYPE IGUAL CADENA RQUESTION datos LQUESTION DOLAR . ELEMENT RQUESTION
+
+    ELEMENT         shift and go to state 27
+
+
+state 26
+
+    (7) dato -> LQUESTION ITEM ID IGUAL . CADENA DOLAR RQUESTION
+    (8) dato -> LQUESTION ITEM ID IGUAL . ENTERO DOLAR RQUESTION
+
+    CADENA          shift and go to state 28
+    ENTERO          shift and go to state 29
+
+
+state 27
+
+    (4) elemento -> LQUESTION ELEMENT TYPE IGUAL CADENA RQUESTION datos LQUESTION DOLAR ELEMENT . RQUESTION
+
+    RQUESTION       shift and go to state 30
+
+
+state 28
+
+    (7) dato -> LQUESTION ITEM ID IGUAL CADENA . DOLAR RQUESTION
+
+    DOLAR           shift and go to state 31
+
+
+state 29
+
+    (8) dato -> LQUESTION ITEM ID IGUAL ENTERO . DOLAR RQUESTION
+
+    DOLAR           shift and go to state 32
+
+
+state 30
+
+    (4) elemento -> LQUESTION ELEMENT TYPE IGUAL CADENA RQUESTION datos LQUESTION DOLAR ELEMENT RQUESTION .
+
+    LQUESTION       reduce using rule 4 (elemento -> LQUESTION ELEMENT TYPE IGUAL CADENA RQUESTION datos LQUESTION DOLAR ELEMENT RQUESTION .)
+
+
+state 31
+
+    (7) dato -> LQUESTION ITEM ID IGUAL CADENA DOLAR . RQUESTION
+
+    RQUESTION       shift and go to state 33
+
+
+state 32
+
+    (8) dato -> LQUESTION ITEM ID IGUAL ENTERO DOLAR . RQUESTION
+
+    RQUESTION       shift and go to state 34
+
+
+state 33
+
+    (7) dato -> LQUESTION ITEM ID IGUAL CADENA DOLAR RQUESTION .
+
+    LQUESTION       reduce using rule 7 (dato -> LQUESTION ITEM ID IGUAL CADENA DOLAR RQUESTION .)
+
+
+state 34
+
+    (8) dato -> LQUESTION ITEM ID IGUAL ENTERO DOLAR RQUESTION .
+
+    LQUESTION       reduce using rule 8 (dato -> LQUESTION ITEM ID IGUAL ENTERO DOLAR RQUESTION .)
+
