@@ -5,3 +5,6 @@ pruebas.exe
 /Img/
 archivo.dot
 salida.txt
+prueba.py
+Analyzer/__pycache__/
+TDAs/__pycache__/
