@@ -1,5 +1,4 @@
 from TDAs.SimpleNode import SimpleNode
-from TDAs.SimpleNode import SimpleNode
 
 class Semestre(SimpleNode):
     def __init__(self, data):

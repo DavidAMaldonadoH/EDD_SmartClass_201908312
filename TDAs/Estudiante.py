@@ -1,15 +1,16 @@
 from TDAs.AVLNode import AVLNode
 
 class Estudiante(AVLNode):
-    def __init__(self, carnet, DPI, nombre, carrera, correo, password, creditos, listaA):
+    def __init__(self, carnet, DPI, nombre, carrera, correo, password, creditos, edad):
         super().__init__(carnet)
         self.carnet = carnet
         self.DPI = DPI
         self.nombre = nombre
         self.carrera = carrera
-        self.correro = correo
+        self.correo = correo
         self.password = password
         self.creditos = creditos
+        self.edad = edad
         self.listaA = None
 
     def getCarnet(self):
@@ -53,6 +54,12 @@ class Estudiante(AVLNode):
 
     def setCreditos(self, creditos):
         self.creditos = creditos
+
+    def getEdad(self):
+        return self.edad
+
+    def setEdad(self, edad):
+        self.edad = edad
 
     def getListaA(self):
         return self.listaA
