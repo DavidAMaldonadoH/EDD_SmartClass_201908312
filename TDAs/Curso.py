@@ -1,6 +1,6 @@
-from TDAs.AVLNode import AVLNode
+from TDAs.SimpleNode import SimpleNode
 
-class Curso(AVLNode):
+class Curso(SimpleNode):
 
     def __init__(self, codigo, nombre, creditos, prerequisitos, obligatorio):
         super().__init__(codigo)
