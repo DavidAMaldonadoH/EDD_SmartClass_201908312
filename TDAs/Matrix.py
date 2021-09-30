@@ -60,11 +60,12 @@ class Matrix():
     
     def get(self, row, column):
         hora = self.horas.find(row)
-        actual = hora.getAccessNode()
-        while actual is not None:
-            if actual.getColumn() == column:
-                return actual
-            actual = actual.getNext()
+        if hora:
+            actual = hora.getAccessNode()
+            while actual is not None:
+                if actual.getColumn() == column:
+                    return actual
+                actual = actual.getNext()
         return None
 
     def printMatrix(self):
