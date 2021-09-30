@@ -1,4 +1,5 @@
 from TDAs.AVLNode import AVLNode
+from TDAs.DoubleList import DoubleList
 
 class Estudiante(AVLNode):
     def __init__(self, carnet, DPI, nombre, carrera, correo, password, creditos, edad):
@@ -11,7 +12,7 @@ class Estudiante(AVLNode):
         self.password = password
         self.creditos = creditos
         self.edad = edad
-        self.listaA = None
+        self.listaA = DoubleList()
 
     def getCarnet(self):
         return self.carnet
@@ -66,3 +67,6 @@ class Estudiante(AVLNode):
 
     def setListaA(self, listaA):
         self.listaA = listaA
+    
+    def addYear(self, year):
+        self.listaA.add(year)

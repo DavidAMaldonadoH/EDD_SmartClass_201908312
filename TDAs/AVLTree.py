@@ -166,7 +166,7 @@ class AVLTree():
 
     def _toGviz(self, tmp, cadenas):
         if tmp:
-            cadenas.append(f'\nnodo{tmp.getData()} [label="IZQ* | {tmp.getData()} | DER*"]')
+            cadenas.append(f'\nnodo{tmp.getData()} [label="IZQ* | {tmp.getData()}\\n{tmp.getNombre()}\\n{tmp.getCarrera()} | DER*"]')
             if tmp.getLeft() is not None:
                 cadenas.append(f'\nnodo{tmp.getData()} -> nodo{tmp.getLeft().getData()};')
             if tmp.getRight() is not None:
