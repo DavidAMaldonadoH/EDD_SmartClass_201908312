@@ -29,8 +29,6 @@ class SimpleList():
                     if (nodo_aux.getNext() is None):  # Si el siguiente del actual es None es porque nuevo va a ser el ultimo
                         nodo_aux.setNext(nodo)
                 self.size += 1
-            else:
-                print('El nodo ya existe')
     
     def get(self, i):
         index = 0

@@ -33,8 +33,6 @@ class DoubleList:
                         nodo_aux.setNext(nodo)
                         nodo.setPrev(nodo_aux)
                 self.size += 1
-            else:
-                print('El nodo ya existe')
 
     def get(self, i):
         index = 0
