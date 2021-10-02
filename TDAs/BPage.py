@@ -42,8 +42,15 @@ class BPage():
     def toCadena(self):
         label = ''
         for i in range(len(self.keys)):
-            if i != 4:
-                label+=f'{self.keys[i].getData()} | '
+            if i != len(self.keys)-1:
+                label+=f'{self.keys[i].getData():03}\\n{self.keys[i].getNombre()}| |'
             else:
-                label+=f'{self.keys[i].getData()}'
+                label+=f'{self.keys[i].getData():03}\\n{self.keys[i].getNombre()}'
         return label
+    
+    def toID(self):
+        label = ''
+        for i in range(len(self.keys)):
+            label+=f'{self.keys[i].getData():03}'
+        return label
+    

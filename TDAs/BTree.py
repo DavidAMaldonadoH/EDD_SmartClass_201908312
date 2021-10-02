@@ -9,7 +9,6 @@ class BTree():
         self.root = self._add(nodo, self.root)
 
     def _add(self, nodo, tmp):
-        c = []
         if tmp.isLeaf():
             tmp.addKey(nodo)
         else:
@@ -21,8 +20,6 @@ class BTree():
                     break
             if not found:
                 self._add(nodo, tmp.getBranch(tmp.getSizeKeys()))
-        if tmp.fullBranches():
-            c = tmp.branches
         if tmp.isFull():
             if tmp.getParent() is None:
                 r = tmp
@@ -32,6 +29,17 @@ class BTree():
                 tmp.addBranch(1, BPage(tmp))
                 tmp.getBranch(0).keys = r.keys[0:int((self.degree)/2)]
                 tmp.getBranch(1).keys = r.keys[int((self.degree)/2)+1:]
+                if r.fullBranches():
+                    x=0
+                    for i in range(int(self.degree/2)+1):
+                        r.getBranch(i).parent = tmp.getBranch(0)
+                        tmp.getBranch(0).addBranch(i, r.getBranch(i))
+                    for i in range(int(self.degree/2)+1, self.degree+1):
+                        r.getBranch(i).parent = tmp.getBranch(1)
+                        tmp.getBranch(1).addBranch(x, r.getBranch(i))
+                        x+=1
+                    tmp.getBranch(0).leaf = False
+                    tmp.getBranch(1).leaf = False
                 tmp.leaf = False
             else:
                 mkey = tmp.getCenter()
@@ -47,14 +55,17 @@ class BTree():
                 aux = tmp
                 tmp.getParent().addBranch(index, BPage(tmp.getParent()))
                 tmp.getParent().getBranch(index).keys = aux.keys[0:int(self.degree/2)]
-            if len(c) != 0:
-                x=0
-                for i in range(int(self.degree/2)+1):
-                    tmp.getBranch(0).addBranch(i, c[i])
-                for i in range(int(self.degree/2)+1, self.degree+1):
-                    tmp.getBranch(1).addBranch(x, c[i])
-                    x+=1
-                c = []
+                if tmp.fullBranches():
+                    x=0
+                    for i in range(int(self.degree/2)+1):
+                        tmp.getBranch(i).parent = tmp.getParent().getBranch(index)
+                        tmp.getParent().getBranch(index).addBranch(i, tmp.getBranch(i))
+                    for i in range(int(self.degree/2)+1, self.degree+1):
+                        tmp.getBranch(i).parent = tmp.getParent().getBranch(index+1)
+                        tmp.getParent().getBranch(index+1).addBranch(x, tmp.getBranch(i))
+                        x+=1
+                    tmp.getParent().getBranch(index).leaf = False
+                    tmp.getParent().getBranch(index+1).leaf = False
         return tmp
     
     def show(self):
@@ -65,3 +76,14 @@ class BTree():
         for i in range(self.degree+1):
             if tmp.getBranch(i) is not None:
                 self._show(tmp.getBranch(i), h+1)
+    
+    def toGviz(self, cadenas):
+        self._toGviz(self.root, cadenas)
+    
+    def _toGviz(self, tmp, cadenas):
+        if tmp:
+            cadenas.append(f'\nnodo{tmp.toID()} [label="{tmp.toCadena()}"]')
+            for i in range(self.degree+1):
+                if tmp.getBranch(i) is not None:
+                    cadenas.append(f'\nnodo{tmp.toID()} -> nodo{tmp.getBranch(i).toID()}')
+                    self._toGviz(tmp.getBranch(i), cadenas)
