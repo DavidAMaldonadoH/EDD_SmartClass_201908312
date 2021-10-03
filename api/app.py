@@ -10,6 +10,8 @@ else:
 from flask import Flask, url_for, request, Response, jsonify
 from flask_cors import CORS
 
+import json
+
 from TDAs.AVLTree import AVLTree
 from TDAs.Estudiante import Estudiante
 from TDAs.Tarea import Tarea
@@ -17,13 +19,16 @@ from TDAs.Year import Year
 from TDAs.Semestre import Semestre
 from TDAs.Mes import Mes
 from TDAs.SimpleList import SimpleList
+from TDAs.BTree import BTree
+from TDAs.Curso import Curso
 from Analyzer.parser import parser, elementos
-from api.functions import cargarArchivo, genGraphAVL, genGraphMatriz, genGraphTareas
+from api.functions import cargarArchivo, genGraphAVL, genGraphMatriz, genGraphTareas, genGraphB
 
 app = Flask(__name__)
 CORS(app)
 
 estudiantes = AVLTree()
+cursosP = BTree()
 
 #Rutas
 @app.route('/', methods=['GET'])
@@ -43,17 +48,17 @@ def carga():
             for elemento in elementos:
                 if elemento['type'] == 'user':
                     est = Estudiante(int(elemento['carnet']), elemento['dpi'], elemento['nombre'], elemento['carrera'],
-                    'jola', elemento['password'], elemento['creditos'], elemento['edad'])
+                    elemento['correo'], elemento['password'], elemento['creditos'], elemento['edad'])
                     estudiantes.add(est)
                 else:
                     est = estudiantes.get(int(elemento['carnet']))
                     if est:
                         fecha = elemento['fecha'].split('/')
                         listaAn = est.getListaA()
-                        listaAn.add(Year(int(fecha[0])))
-                        year = listaAn.find(int(fecha[0]))
-                        mesData = int(fecha[1]) if (fecha[1][0] == '0') else int(fecha[1][1])
-                        diaData = int(fecha[2]) if (fecha[2][0] == '0') else int(fecha[2][1])
+                        listaAn.add(Year(int(fecha[2])))
+                        year = listaAn.find(int(fecha[2]))
+                        mesData = int(fecha[1][1]) if (fecha[1][0] == '0') else int(fecha[1])
+                        diaData = int(fecha[0][1]) if (fecha[0][0] == '0') else int(fecha[0])
                         horaData = elemento['hora'].split(':')
                         if mesData <= 6:
                             year.getSemestres().add(Semestre(1))
@@ -66,12 +71,29 @@ def carga():
                             listaT = SimpleList()
                             tareasM.add(int(horaData[0]), int(diaData), listaT)
                         task = Tarea(
-                            tareasM.get(int(horaData[0]), diaData).getTareas().getSize(), elemento['carnet'], elemento['nombre'], elemento['descripcion'], elemento['materia'],
+                            tareasM.get(int(horaData[0]), diaData).getTareas().getSize(), elemento['carnet'], elemento['nombre'],
+                            elemento['descripcion'], elemento['materia'],
                             elemento['fecha'], elemento['hora'], elemento['estado']
                         )
                         tareasM.get(int(horaData[0]), diaData).getTareas().add(task)
         else:
-            print('curso')
+            data = json.loads(file.read())
+            for estudiante in data['Estudiantes']:
+                est = estudiantes.get(int(estudiante['Carnet']))
+                years = est.getListaA()
+                for y in estudiante['Años']:
+                    if years.find(int(y['Año'])) is None:
+                        years.add(Year(int(y['Año'])))
+                    cy = years.find(int(y['Año']))
+                    sems = cy.getSemestres()
+                    for sem in y['Semestres']:
+                        if not sems.find(int(sem['Semestre'])):
+                            sems.add(Semestre(int(sem['Semestre'])))
+                        csem = sems.find(int(sem['Semestre'])).getCursos()
+                        for item in sem['Cursos']:
+                            csem.add(Curso(int(item['Codigo']), item['Nombre'], item['Creditos'], item['Prerequisitos'], item['Obligatorio']))
+
+        file.close()
     return "Carga masiva realizada con éxito!"
 
 @app.route('/reporte', methods=['GET'])
@@ -83,20 +105,26 @@ def reporte():
     elif data['tipo'] == 1:
         est = estudiantes.get(int(data['carnet']))
         year = est.getListaA().find(int(data['año']))
-        mes = year.find(int(data['mes']))
+        mes = year.getMeses().find(int(data['mes']))
         genGraphMatriz(mes.getTareas())
         return 'Reporte de Matriz de Tareas generado con éxito!'
     elif data['tipo'] == 2:
         est = estudiantes.get(int(data['carnet']))
-        year = est.getListaA().get(int(data['año']))
-        mes = year.get(int(data['mes']))
+        print(est)
+        year = est.getListaA().find(int(data['año']))
+        mes = year.getMeses().find(int(data['mes']))
         tareas = mes.getTareas().get(data['hora'], data['dia'])
-        genGraphTareas(tareas)
+        genGraphTareas(tareas.getTareas())
         return 'Reporte de Lista de Tareas generado con éxito!'
     elif data['tipo'] == 3:
+        genGraphB(cursosP, 'Pensum')
         return 'Reporte de Pensum generado con éxito!'
     else:
-        return f'Reporte de Cursos del estudiante '
+        est = estudiantes.get(int(data['carnet']))
+        year = est.getListaA().find(int(data['año']))
+        semestre = year.getSemestres().find(int(data['semestre']))
+        genGraphB(semestre.getCursos(), 'Estudiante')
+        return f'Reporte de Cursos del estudiante generado con éxito!'
 
 @app.route('/estudiante', methods=['GET', 'POST', 'PUT', 'DELETE'])
 def estudiante():
@@ -136,8 +164,8 @@ def recordatorios():
     data = request.json
     est = estudiantes.get(int(data['carnet']))
     fecha = data['fecha'].split('/')
-    mesData = int(fecha[1]) if (fecha[1][0] == '0') else int(fecha[1][1])
-    diaData = int(fecha[2]) if (fecha[2][0] == '0') else int(fecha[2][1])
+    mesData = int(fecha[1][1]) if (fecha[1][0] == '0') else int(fecha[1])
+    diaData = int(fecha[0][1]) if (fecha[0][0] == '0') else int(fecha[0])
     hora = data['hora'].split(':')
     year = est.getListaA().find(int(fecha[0]))
     mes = year.getMeses().find(mesData)
@@ -180,11 +208,39 @@ def recordatorios():
 
 @app.route('/cursosEstudiante', methods=['POST'])
 def cursosEstudiante():
-    pass
+    data = request.json
+    path = data['path']
+    file = cargarArchivo(path)
+    if file:
+        data = json.loads(file.read())
+        for estudiante in data['Estudiantes']:
+            est = estudiantes.get(int(estudiante['Carnet']))
+            years = est.getListaA()
+            for y in estudiante['Años']:
+                if years.find(int(y['Año'])) is None:
+                    years.add(Year(int(y['Año'])))
+                cy = years.find(int(y['Año']))
+                sems = cy.getSemestres()
+                for sem in y['Semestres']:
+                    if not sems.find(int(sem['Semestre'])):
+                        sems.add(Semestre(int(sem['Semestre'])))
+                    csem = sems.find(int(sem['Semestre'])).getCursos()
+                    for item in sem['Cursos']:
+                        csem.add(Curso(int(item['Codigo']), item['Nombre'], item['Creditos'], item['Prerequisitos'], item['Obligatorio']))
+        file.close()
+    return 'Cursos del estudiante cargados con éxito!'
 
 @app.route('/cursosPensum', methods=['POST'])
 def cursosPensum():
-    pass
+    data = request.json
+    path = data['path']
+    file = cargarArchivo(path)
+    if file:
+        data = json.loads(file.read())
+        for item in data['Cursos']:
+            cursosP.add(Curso(int(item['Codigo']), item['Nombre'], item['Creditos'], item['Prerequisitos'], item['Obligatorio']))
+        file.close()
+    return 'Cursos de Pensum cargados con éxito!'
 
 if __name__ == "__main__":
     app.run(host='127.0.0.1', port=3000, debug=True)
