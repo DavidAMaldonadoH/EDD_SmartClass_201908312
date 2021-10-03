@@ -1,9 +1,10 @@
+from TDAs.BTree import BTree
 from TDAs.SimpleNode import SimpleNode
 
 class Semestre(SimpleNode):
     def __init__(self, data):
         super().__init__(data)
-        self.cursos = None
+        self.cursos = BTree()
     
     def getCursos(self):
         return self.cursos
