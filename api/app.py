@@ -167,7 +167,15 @@ def recordatorios():
     mesData = int(fecha[1][1]) if (fecha[1][0] == '0') else int(fecha[1])
     diaData = int(fecha[0][1]) if (fecha[0][0] == '0') else int(fecha[0])
     hora = data['hora'].split(':')
-    year = est.getListaA().find(int(fecha[0]))
+    if not est.getListaA().find(int(fecha[2])):
+        est.getListaA().add(Year(int(fecha[2])))
+    year = est.getListaA().find(int(fecha[2]))
+    if mesData <= 6:
+        year.getSemestres().add(Semestre(1))
+    elif mesData >= 7:
+        year.getSemestres().add(Semestre(2))
+    if not year.getMeses().find(mesData):
+        year.getMeses().add(Mes(mesData))
     mes = year.getMeses().find(mesData)
     tareasM = mes.getTareas()
     if not tareasM.get(int(hora[0]), diaData):
