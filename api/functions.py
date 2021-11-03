@@ -214,3 +214,25 @@ def genGraphB(Btree, tipo):
     f.close()
     os.system(f"dot -Nfontname=Arial -Tsvg archivo.dot -o Reportes_F2/{tipo}_btree.svg")
     print("\n> Grafico de arbol B generado exitosamente!")
+
+def genGraphHashTable(hashtable):
+    f = open("archivo.dot", "w", encoding="utf-8")
+    f.write("digraph hashtable {\npad=0.35\n")
+    f.write('rankdir="TB"\nbgcolor = "#edf6f9";\nfontcolor = "#0e606b";\nlabelloc=t;\nlabel = "Tabla Hash";\nedge[color="#0e606b"];')
+    f.write('\nfontname = "Arial";\nfontsize = "24.0";')
+    f.write('\nnode[shape="record" color="#e29578" fillcolor="#ffddd2" style="filled" fontcolor = "#e29578" fontname = "Arial"]')
+    for i, key in enumerate(hashtable.keys):
+        f.write(f'\nnodoK{i}[label="{key.getData()}" width = 1.5 height = 1 pos="0, {i*-1}!"]')
+        if key.getData() != -1:
+            f.write(f'\nnodoK{i} -> nodo{i}{0}')
+            for j in range(key.getNotes().getSize()):
+                apunte = key.getNotes().get(j)
+                if j != key.getNotes().getSize() - 1:
+                    f.write(f'\nnodo{i}{j}->nodo{i}{j+1}')
+                f.write(f'\nnodo{i}{j}[label="Titulo: {apunte.titulo}" pos="{(j+1)*4}, {i*-1}!" height = 0.75 ')
+                f.write(f'shape="oval" color="#006d77" fillcolor="#83c5be" fontcolor="#006d77"]')
+            
+    f.write("\n}")
+    f.close()
+    os.system(f"neato -Nfontname=Arial -Tsvg archivo.dot -o Reportes_F2/hashtable.svg")
+    print("\n> Grafico de Tabla Hash generado exitosamente!")
