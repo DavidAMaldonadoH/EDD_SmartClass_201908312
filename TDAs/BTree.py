@@ -68,6 +68,22 @@ class BTree():
                     tmp.getParent().getBranch(index+1).leaf = False
         return tmp
     
+    def get(self, value):
+        return self._get(value, self.root)
+
+    def _get(self, value, tmp):
+        if tmp:
+            found = False
+            for i in range(tmp.getSizeKeys()):
+                if value == tmp.getKey(i).getData():
+                    return tmp.getKey(i)
+                if value < tmp.getKey(i).getData():
+                    found = True
+                    return self._get(value, tmp.getBranch(i))
+            if not found:
+                return self._get(value, tmp.getBranch(tmp.getSizeKeys()))
+        return None
+
     def show(self):
         self._show(self.root, 0)
     
