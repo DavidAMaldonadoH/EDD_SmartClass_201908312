@@ -10,3 +10,10 @@ Analyzer/__pycache__/
 TDAs/__pycache__/
 api/__pycache__/
 /Reportes_F2/
+client/node_modules/
+client/public/
+client/.gitignore
+client/.env
+client/package.json
+client/package-lock.json
+client/README.md

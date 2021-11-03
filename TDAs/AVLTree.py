@@ -1,6 +1,7 @@
 class AVLTree():
     def __init__(self):
         self.root = None
+        self.key = None
     
     def isEmpty(self):
         return self.root == None
