@@ -20,3 +20,6 @@ class HashNode:
 
     def addNote(self, nodo):
         self.notes.add(nodo)
+    
+    def getNotesSize(self):
+        return self.notes.getSize()

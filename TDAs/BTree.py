@@ -103,3 +103,23 @@ class BTree():
                 if tmp.getBranch(i) is not None:
                     cadenas.append(f'\nnodo{tmp.toID()} -> nodo{tmp.getBranch(i).toID()}')
                     self._toGviz(tmp.getBranch(i), cadenas)
+    
+    def toListaAdy(self, tablaAdy):
+        self._toListaAdy(self.root, tablaAdy)
+    
+    def _toListaAdy(self, tmp, tablaAdy):
+        if tmp:
+            for i in range(len(tmp.keys)): 
+                item = [tmp.getKey(i).getCodigo(), tmp.getKey(i).getNombre()]
+                pre_rqs = dict()
+                if tmp.getKey(i).getPreRequisitos() != "":
+                    z = tmp.getKey(i).getPreRequisitos().split(",")
+                    for codigo in z:
+                        if self.get(int(codigo)):
+                            c = self.get(int(codigo))
+                            pre_rqs.update({int(codigo): c.creditos})
+                item.append(pre_rqs)
+                tablaAdy.append(item)
+            for i in range(self.degree+1):
+                if tmp.getBranch(i) is not None:
+                    self._toListaAdy(tmp.getBranch(i), tablaAdy)

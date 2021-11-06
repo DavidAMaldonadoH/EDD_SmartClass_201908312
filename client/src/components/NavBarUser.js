@@ -22,8 +22,8 @@ function NavBarUser(props) {
 				<div className="collapse navbar-collapse" id="navbarNav">
 					<ul className="navbar-nav ms-auto">
 						<NavItem texto="Apuntes" direccion="dashboard/user/apuntes" />
-						<NavItem texto="Tareas" />
-						<NavItem texto="Red de Cursos" />
+						<NavItem texto="Red de Cursos" direccion="dashboard/user/red-cursos"/>
+						<NavItem texto="Cursos Asignados" direccion="dashboard/user/cursos"/>
 						<NavItem texto="Log Out" direccion="login" func={props.onLogOut} />
 					</ul>
 				</div>

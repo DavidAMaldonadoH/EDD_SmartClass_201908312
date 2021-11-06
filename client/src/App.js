@@ -6,6 +6,8 @@ import Register from './components/Register';
 import AdminPage from './components/AdminPage';
 import UserPage from './components/UserPage';
 import ApuntesPage from './components/ApuntesPage';
+import RedCursos from './components/RedCursos';
+import Cursos from './components/Cursos';
 
 function App() {
 	const [loggedIn, setLoggedIn] = useState(false);
@@ -61,6 +63,14 @@ function App() {
 			<Route
 				path="/dashboard/user/apuntes"
 				render={(props) => <ApuntesPage onLogOut={logOut} account={account} />}
+			/>
+			<Route
+				path="/dashboard/user/red-cursos"
+				render={(props) => <RedCursos onLogOut={logOut} account={account} />}
+			/>
+			<Route
+				path="/dashboard/user/cursos"
+				render={(props) => <Cursos onLogOut={logOut} account={account} />}
 			/>
 		</Router>
 	);

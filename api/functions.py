@@ -236,3 +236,55 @@ def genGraphHashTable(hashtable):
     f.close()
     os.system(f"neato -Nfontname=Arial -Tsvg archivo.dot -o Reportes_F2/hashtable.svg")
     print("\n> Grafico de Tabla Hash generado exitosamente!")
+
+def genGraph(tablaAdy):
+    f = open("archivo.dot", "w", encoding="utf-8")
+    f.write("digraph grafo {\npad=0.35\n")
+    f.write('rankdir="LR"\nbgcolor = "#edf6f9";\nfontcolor = "#0e606b";\nlabelloc=t;\nlabel = "Grafo";\nedge[color="#0e606b"];')
+    f.write('\nfontname = "Arial";\nfontsize = "24.0";')
+    f.write('\nnode[shape="record" heigth=1.5 color="#e29578" fillcolor="#ffddd2" style="filled" fontcolor = "#e29578" fontname = "Arial"]')
+    for item in tablaAdy:
+        f.write(f'\nnodo{item[0]} [ label="{item[0]} - {item[1]}" ]')
+        for key, value in item[2].items():
+            f.write(f'\nnodo{key} -> nodo{item[0]} [ label={value} ]')
+    f.write("\n}")
+    f.close()
+    os.system(f"dot -Nfontname=Arial -Tsvg archivo.dot -o Reportes_F2/grafo.svg")
+    print("\n> Grafico de Grafo generado exitosamente!")
+
+def analizarCurso(tablaAdy, curso, pensum):
+    if curso:
+        item = [curso.getCodigo(), curso.getNombre()]
+        pre_rqs = dict()
+        if curso.getPreRequisitos() != "":
+            pre_rqsStr = curso.getPreRequisitos().split(",")
+            for codigo in pre_rqsStr:
+                c = pensum.get(int(codigo))
+                pre_rqs.update({int(codigo): c.creditos})
+                analizarCurso(tablaAdy, c, pensum)
+        item.append(pre_rqs)
+        if item not in tablaAdy:
+            tablaAdy.append(item)
+
+def genStringGraph(tablaAdy) -> str:
+    cadena = 'digraph {\n'
+    cadena += 'rankdir="LR"\nbgcolor = "#fffffc";\nfontcolor = "#0e606b";\nedge[color="#0e606b"];'
+    cadena += '\nfontname = "Arial";\nfontsize = "24.0";'
+    cadena += '\nnode[shape="record" heigth=1.5 color="#e29578" fillcolor="#ffddd2" style="filled" fontcolor = "#e29578" fontname = "Arial"]'
+    for item in tablaAdy:
+        cadena += f'\nnodo{item[0]} [ label="{item[0]} - {item[1]}" ]'
+        for key, value in item[2].items():
+            cadena += f'\nnodo{key} -> nodo{item[0]} [ label={value} ]'
+    cadena += '\n}'
+    return cadena
+
+def genStringBTree(Btree):
+    cadenas = []
+    cadena = "digraph btree {\npad=0.35\n"
+    cadena += 'rankdir="TB"\nbgcolor = "#fffffc";\nfontcolor = "#0e606b";\nedge[color="#0e606b"];'
+    cadena += '\nfontname = "Arial";\nfontsize = "24.0";'
+    cadena += '\nnode[shape="record" color="#0e606b" fillcolor="#f47068" style="filled" fontcolor = "#0e606b" fontname = "Arial"]'
+    Btree.toGviz(cadenas)
+    cadena +=  ''.join(cadenas)
+    cadena += "\n}"
+    return cadena

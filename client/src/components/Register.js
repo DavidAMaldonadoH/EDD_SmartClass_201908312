@@ -55,7 +55,7 @@ function Register() {
 		});
 
 		const data = await res.json();
-		console.log(data);
+		alert(data.msg);
 	};
 
 	const onSubmit = (e) => {
@@ -63,7 +63,7 @@ function Register() {
 		addUser(user);
 		history.push('/login');
 	};
-	
+
 	return (
 		<>
 			<NavBar />

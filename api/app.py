@@ -28,12 +28,15 @@ from TDAs.HashTable import HashTable
 from TDAs.HashNode import HashNode
 from Analyzer.parser import parser, elementos
 from api.functions import (
+    analizarCurso,
     cargarArchivo,
     genGraphAVL,
     genGraphMatriz,
     genGraphTareas,
     genGraphB,
     genGraphHashTable,
+    genStringBTree,
+    genStringGraph,
 )
 
 app = Flask(__name__)
@@ -388,6 +391,84 @@ def apuntes():
             )
         apuntesTable.insert(apunteNode)
     return jsonify(msg="Apuntes cargados con éxito!")
+
+
+@app.route("/apuntes_usuario/<string:carnet>", methods=["GET", "POST"])
+def apuntes_usuario(carnet):
+    if request.method == "POST":
+        data = request.json
+        notes = apuntesTable.find(int(carnet))
+        if not notes:
+            apunteNode = HashNode(int(carnet))
+            apunteNode.addNote(
+                Apunte(
+                    apunteNode.getNotesSize(),
+                    int(carnet),
+                    data["titulo"],
+                    data["contenido"],
+                )
+            )
+            apuntesTable.insert(apunteNode)
+        else:
+            notes.addNote(
+                Apunte(
+                    notes.getNotesSize() + 1,
+                    int(carnet),
+                    data["titulo"],
+                    data["contenido"],
+                )
+            )
+        return jsonify(msg="Apunte agregado con éxito!")
+    else:
+        notes = apuntesTable.find(int(carnet))
+        resp = []
+        for i in range(notes.getNotes().getSize()):
+            resp.append(
+                {
+                    "ID": notes.getNotes().get(i).data,
+                    "Titulo": notes.getNotes().get(i).titulo,
+                    "Contenido": notes.getNotes().get(i).contenido,
+                }
+            )
+        return jsonify({"apuntes": resp})
+
+
+@app.route("/redcursos/<string:codigo>", methods=["GET"])
+def redcursos(codigo):
+    codigoCurso = int(codigo)
+    tablaAdy = list()
+    curso = cursosP.get(codigoCurso)
+    analizarCurso(tablaAdy, curso, cursosP)
+    cadena = genStringGraph(tablaAdy)
+    return jsonify(dotSrc=cadena)
+
+
+@app.route("/asignarcurso/<string:carnet>/<string:codigo>", methods=["GET"])
+def asignarcurso(carnet, codigo):
+    codigoCurso = int(codigo)
+    curso = cursosP.get(codigoCurso)
+    est = estudiantes.get(int(carnet))
+    years = est.getListaA()
+    if years.find(2021) is None:
+        years.add(Year(2021))
+    cy = years.find(2021)
+    sems = cy.getSemestres()
+    if sems.find(2) is None:
+        sems.add(Semestre(2))
+    csem = sems.find(2).getCursos()
+    csem.add(curso)
+    return jsonify(msg=f"Curso con codigo: {codigo}, asignado con exito a: {carnet}")
+
+
+@app.route(
+    "/cursos/ver/<string:carnet>/<string:year>/<string:semestre>", methods=["GET"]
+)
+def vercursos(carnet, year, semestre):
+    est = estudiantes.get(int(carnet))
+    anio = est.getListaA().find(int(year))
+    sems = anio.getSemestres().find(int(semestre))
+    cadena = genStringBTree(sems.getCursos())
+    return jsonify(dotSrc=cadena)
 
 
 if __name__ == "__main__":
