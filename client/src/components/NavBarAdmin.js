@@ -21,11 +21,20 @@ function NavBarAdmin(props) {
 				</button>
 				<div className="collapse navbar-collapse" id="navbarNav">
 					<ul className="navbar-nav ms-auto">
+						<NavItem2 texto="Reportes" target="#ReportesModal" />
 						<NavItem texto="Log Out" direccion="login" func={props.onLogOut} />
 					</ul>
 				</div>
 			</div>
 		</nav>
+	);
+}
+
+function NavItem2(props) {
+	return (
+		<li className="nav-item" data-bs-toggle="modal" data-bs-target={props.target}>
+			<div className="nav-link">{props.texto}</div>
+		</li>
 	);
 }
 

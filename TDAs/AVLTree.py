@@ -1,3 +1,5 @@
+from cryptography.fernet import Fernet
+
 class AVLTree():
     def __init__(self):
         self.root = None
@@ -174,3 +176,35 @@ class AVLTree():
                 cadenas.append(f'\nnodo{tmp.getData()} -> nodo{tmp.getRight().getData()};')
             self._toGviz(tmp.getLeft(), cadenas)
             self._toGviz(tmp.getRight(), cadenas)
+    
+    def toGviz2(self, cadenas):
+        self._toGviz2(self.root, cadenas)
+
+    def _toGviz2(self, tmp, cadenas):
+        if tmp:
+            cad = f'\nnodo{tmp.getData()} [label="IZQ* | {Fernet(self.key).decrypt(tmp.getCarnet()).decode()}'
+            cad += f'\\n{Fernet(self.key).decrypt(tmp.getCorreo()).decode()}'
+            cad += f'\\n{Fernet(self.key).decrypt(tmp.getPassword()).decode()} | DER*"]'
+            cadenas.append(cad)
+            if tmp.getLeft() is not None:
+                cadenas.append(f'\nnodo{tmp.getData()} -> nodo{tmp.getLeft().getData()};')
+            if tmp.getRight() is not None:
+                cadenas.append(f'\nnodo{tmp.getData()} -> nodo{tmp.getRight().getData()};')
+            self._toGviz2(tmp.getLeft(), cadenas)
+            self._toGviz2(tmp.getRight(), cadenas)
+    
+    def toGviz3(self, cadenas):
+        self._toGviz3(self.root, cadenas)
+
+    def _toGviz3(self, tmp, cadenas):
+        if tmp:
+            cad = f'\nnodo{tmp.getData()} [label="IZQ* | {tmp.getCarnet().decode()[-6:]}'
+            cad += f'\\n{tmp.getCorreo().decode()[-6:]}'
+            cad += f'\\n{tmp.getPassword().decode()[-6:]} | DER*"]'
+            cadenas.append(cad)
+            if tmp.getLeft() is not None:
+                cadenas.append(f'\nnodo{tmp.getData()} -> nodo{tmp.getLeft().getData()};')
+            if tmp.getRight() is not None:
+                cadenas.append(f'\nnodo{tmp.getData()} -> nodo{tmp.getRight().getData()};')
+            self._toGviz3(tmp.getLeft(), cadenas)
+            self._toGviz3(tmp.getRight(), cadenas)

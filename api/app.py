@@ -35,8 +35,11 @@ from api.functions import (
     genGraphTareas,
     genGraphB,
     genGraphHashTable,
+    genStringAVL,
+    genStringAVL2,
     genStringBTree,
     genStringGraph,
+    genStringHash,
 )
 
 app = Flask(__name__)
@@ -470,6 +473,27 @@ def vercursos(carnet, year, semestre):
     cadena = genStringBTree(sems.getCursos())
     return jsonify(dotSrc=cadena)
 
+@app.route("/redcurriculum/", methods=['GET'])
+def redcurriculum():
+    tablaAdy = list()
+    cursosP.toListaAdy(tablaAdy)
+    cadena = genStringGraph(tablaAdy)
+    return jsonify(dotSrc=cadena)
+
+@app.route("/reporteapuntes/", methods=['GET'])
+def reporteapuntes():
+    cadena = genStringHash(apuntesTable)
+    return jsonify(dotSrc=cadena)
+
+@app.route("/reporteavl1/", methods=['GET'])
+def reporteavl1():
+    cadena = genStringAVL(estudiantes)
+    return jsonify(dotSrc=cadena)
+
+@app.route("/reporteavl2/", methods=['GET'])
+def reporteavl2():
+    cadena = genStringAVL2(estudiantes)
+    return jsonify(dotSrc=cadena)
 
 if __name__ == "__main__":
     app.run(host="localhost", port=3000, debug=True)

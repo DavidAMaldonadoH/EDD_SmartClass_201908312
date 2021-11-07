@@ -288,3 +288,43 @@ def genStringBTree(Btree):
     cadena +=  ''.join(cadenas)
     cadena += "\n}"
     return cadena
+
+def genStringHash(hashtable):   
+    cadena = "digraph hashtable {\npad=0.35\n"
+    cadena += 'rankdir="LR"\nbgcolor = "#fffffc";\nfontcolor = "#0e606b";\nedge[color="#0e606b"];'
+    cadena += '\nfontname = "Arial";\nfontsize = "24.0";'
+    cadena += '\nnode[shape="record" color="#e29578" fillcolor="#ffddd2" style="filled" fontcolor = "#e29578" fontname = "Arial"]'
+    for i, key in enumerate(hashtable.keys):
+        cadena += f'\nnodoK{i}[label="{key.getData()}" width = 1.5 height = 1 pos="0, {i*-1}!"]'
+        if key.getData() != -1:
+            cadena += f'\nnodoK{i} -> nodo{i}{0}'
+            for j in range(key.getNotes().getSize()):
+                apunte = key.getNotes().get(j)
+                if j != key.getNotes().getSize() - 1:
+                    cadena += f'\nnodo{i}{j}->nodo{i}{j+1}'
+                cadena += f'\nnodo{i}{j}[label="Titulo: {apunte.titulo}" pos="{(j+1)*4}, {i*-1}!" height = 0.75 '
+                cadena += f'shape="oval" color="#006d77" fillcolor="#83c5be" fontcolor="#006d77"]'          
+    cadena += "\n}"
+    return cadena
+
+def genStringAVL(AVLtree):
+    cadenas = []
+    cadena = "digraph avltree {\npad=0.35\n"
+    cadena += 'rankdir="TB"\nbgcolor = "#fffffc";\nfontcolor = "#240046";\nedge[color="#240046"];'
+    cadena += '\nfontname = "Arial";\nfontsize = "24.0";'
+    cadena += '\nnode[shape="record" color="#240046" fillcolor="#9d4edd" style="filled" fontcolor = "#240046" fontname = "Arial"]'
+    AVLtree.toGviz2(cadenas)
+    cadena +=  ''.join(cadenas)
+    cadena += "\n}"
+    return cadena
+
+def genStringAVL2(AVLtree):
+    cadenas = []
+    cadena = "digraph avltree {\npad=0.35\n"
+    cadena += 'rankdir="TB"\nbgcolor = "#fffffc";\nfontcolor = "#240046";\nedge[color="#240046"];'
+    cadena += '\nfontname = "Arial";\nfontsize = "24.0";'
+    cadena += '\nnode[shape="record" color="#240046" fillcolor="#9d4edd" style="filled" fontcolor = "#240046" fontname = "Arial"]'
+    AVLtree.toGviz3(cadenas)
+    cadena +=  ''.join(cadenas)
+    cadena += "\n}"
+    return cadena

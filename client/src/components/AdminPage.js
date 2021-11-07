@@ -2,6 +2,7 @@ import { useState } from 'react';
 
 import Key from './Key';
 import NavBarAdmin from './NavBarAdmin';
+import Reportes from './Reportes';
 
 function AdminPage(props) {
 	const [key, setKey] = useState('');
@@ -105,6 +106,7 @@ function AdminPage(props) {
 					</div>
 				</div>
 				<textarea className="w-100 mt-3 form-control" readOnly rows={15} value={value}></textarea>
+				<Reportes />
 			</div>
 		</>
 	);
