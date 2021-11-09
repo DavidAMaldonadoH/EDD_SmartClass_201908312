@@ -2,15 +2,21 @@ import { useState } from 'react';
 
 import ApunteForm from './ApunteForm';
 import ApuntesList from './ApuntesList';
+import ModalApunte from './ModalApunte';
 
 function ApuntesPage(props) {
 	const [notes, setNotes] = useState([]);
+	const [actualNote, setActualNote] = useState({ titulo: '', contenido: '' });
 
 	const fetchAputes = async () => {
 		const res = await fetch(`http://localhost:3000/apuntes_usuario/${props.account.carnet}`);
 		const data = await res.json();
-		setNotes(data.apuntes)
+		setNotes(data.apuntes);
 		return data;
+	};
+
+	const setNote = (titulo, contenido) => {
+		setActualNote({ titulo: titulo, contenido: contenido });
 	};
 
 	return (
@@ -47,7 +53,7 @@ function ApuntesPage(props) {
 				</nav>
 				<div className="tab-content" id="nav-tabContent">
 					<div className="tab-pane fade" id="apuntes" role="tabpanel" aria-labelledby="apuntesTab">
-						<ApuntesList notes={notes}/>
+					<ApuntesList notes={notes} setNote={setNote}/>
 					</div>
 					<div
 						className="tab-pane fade"
@@ -59,6 +65,7 @@ function ApuntesPage(props) {
 					</div>
 				</div>
 			</div>
+			<ModalApunte note={actualNote} />
 		</div>
 	);
 }

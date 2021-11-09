@@ -8,6 +8,7 @@ function ApuntesList(props) {
 				key={props.notes[i].ID}
 				titulo={props.notes[i].Titulo}
 				contenido={props.notes[i].Contenido}
+				setNote={props.setNote}
 			/>
 		);
 		apuntes.push(note);

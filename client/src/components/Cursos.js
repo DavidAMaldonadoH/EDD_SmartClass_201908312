@@ -36,7 +36,7 @@ function Cursos(props) {
 					className="text-white text-center fw-bold bg-dark col-form-label"
 					style={{ width: '20%', height: '50px' }}
 				>
-					Semstre
+					Semestre
 				</label>
 				<textarea
 					className="form-control"
