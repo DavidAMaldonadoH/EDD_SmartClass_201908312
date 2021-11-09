@@ -198,9 +198,9 @@ class AVLTree():
 
     def _toGviz3(self, tmp, cadenas):
         if tmp:
-            cad = f'\nnodo{tmp.getData()} [label="IZQ* | {tmp.getCarnet().decode()[-6:]}'
-            cad += f'\\n{tmp.getCorreo().decode()[-6:]}'
-            cad += f'\\n{tmp.getPassword().decode()[-6:]} | DER*"]'
+            cad = f'\nnodo{tmp.getData()} [label="IZQ* | {tmp.getCarnet().decode()[:6]}'
+            cad += f'\\n{tmp.getCorreo().decode()[:6]}'
+            cad += f'\\n{tmp.getPassword().decode()[:6]} | DER*"]'
             cadenas.append(cad)
             if tmp.getLeft() is not None:
                 cadenas.append(f'\nnodo{tmp.getData()} -> nodo{tmp.getLeft().getData()};')

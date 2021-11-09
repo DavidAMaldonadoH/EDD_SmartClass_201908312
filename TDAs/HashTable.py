@@ -13,14 +13,17 @@ class HashTable:
     def division(self, k: int):
         return k % self.m
 
-    def quadratic(self, k: int):
-        return (k * k) % self.m
+    def quadratic(self, k: int, i: int):
+        return (k + i*i) % self.m
 
     def insert(self, node: HashNode):
-        i = self.division(node.getData())
-        while self.keys[i].getData() != -1:
-            i = self.quadratic(i)
-        self.keys[i] = node
+        k = self.division(node.getData())
+        if self.keys[k].getData() != -1:
+            for i in range(self.m):
+                k = self.quadratic(k, i)
+                if self.keys[k].getData() == -1:
+                    break
+        self.keys[k] = node
         self.size += 1
         self.rehashing()
 
@@ -44,9 +47,13 @@ class HashTable:
         return x
 
     def find(self, data) -> HashNode:
-        for i in range(len(self.keys)):
-            if (self.keys[i].getData() == data):
-                return self.keys[i]
+        k = self.division(data)
+        if self.keys[k].getData() != data:
+            for i in range(self.m):
+                k = self.quadratic(k, i)
+                if self.keys[k].getData() == data:
+                    break
+        return self.keys[k]
 
     def isPrime(self, number: int) -> bool:
         for i in range(2, number):

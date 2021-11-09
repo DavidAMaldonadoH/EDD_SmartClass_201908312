@@ -365,7 +365,7 @@ def users():
     for estudiante in data["estudiantes"]:
         if estudiantes.key:
             est = Estudiante(
-                estudiante["carnet"],
+                int(estudiante["carnet"]),
                 Fernet(estudiantes.key).encrypt(str(estudiante["carnet"]).encode()),
                 Fernet(estudiantes.key).encrypt(str(estudiante["DPI"]).encode()),
                 Fernet(estudiantes.key).encrypt(estudiante["nombre"].encode()),
@@ -390,7 +390,7 @@ def apuntes():
         apunteNode = HashNode(int(user["carnet"]))
         for i, apunte in enumerate(user["apuntes"]):
             apunteNode.addNote(
-                Apunte(i, user["carnet"], apunte["Título"], apunte["Contenido"])
+                Apunte(i, user["carnet"], apunte["titulo"], apunte["contenido"])
             )
         apuntesTable.insert(apunteNode)
     return jsonify(msg="Apuntes cargados con éxito!")
