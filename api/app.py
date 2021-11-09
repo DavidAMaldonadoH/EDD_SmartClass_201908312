@@ -13,6 +13,7 @@ from flask_cors import CORS
 from cryptography.fernet import Fernet
 
 import json
+import hashlib
 
 from TDAs.AVLTree import AVLTree
 from TDAs.Estudiante import Estudiante
@@ -178,7 +179,6 @@ def reporte():
 def estudiante():
     data = request.json
     if request.method == "GET":
-        print(data["carnet"])
         est = estudiantes.get(int(data["carnet"]))
         resp = {
             "carnet": est.getCarnet(),
@@ -193,15 +193,16 @@ def estudiante():
         return jsonify(resp)
     elif request.method == "POST":
         if estudiantes.key:
+            contra = hashlib.sha256(data["password"].encode())
             est = Estudiante(
                 int(data["carnet"]),
-                Fernet(estudiantes.key).encrypt(data["carnet"].encode()),
-                Fernet(estudiantes.key).encrypt(data["DPI"].encode()),
+                Fernet(estudiantes.key).encrypt(str(data["carnet"]).encode()),
+                Fernet(estudiantes.key).encrypt(str(data["DPI"]).encode()),
                 Fernet(estudiantes.key).encrypt(data["nombre"].encode()),
                 data["carrera"],
                 Fernet(estudiantes.key).encrypt(data["correo"].encode()),
-                Fernet(estudiantes.key).encrypt(data["password"].encode()),
-                data["creditos"],
+                Fernet(estudiantes.key).encrypt(contra.hexdigest().encode()),
+                str(data["creditos"]),
                 Fernet(estudiantes.key).encrypt(str(data["edad"]).encode()),
             )
             estudiantes.add(est)
@@ -342,21 +343,26 @@ def getAdminKey():
     return jsonify({"adminKey": estudiantes.key.decode()})
 
 
-@app.route("/user/<string:carnet>", methods=["GET"])
-def user(carnet):
+@app.route("/user/<string:carnet>/<string:password>", methods=["GET"])
+def user(carnet, password):
     est = estudiantes.get(int(carnet))
+    contrain = hashlib.sha256(password.encode()).hexdigest()
+    contra = Fernet(estudiantes.key).decrypt(est.getPassword()).decode()
     if est:
-        return jsonify(
-            carnet=Fernet(estudiantes.key).decrypt(est.getCarnet()).decode(),
-            DPI=Fernet(estudiantes.key).decrypt(est.getDPI()).decode(),
-            nombre=Fernet(estudiantes.key).decrypt(est.getNombre()).decode(),
-            carrera=est.getCarrera(),
-            correo=Fernet(estudiantes.key).decrypt(est.getCorreo()).decode(),
-            password=Fernet(estudiantes.key).decrypt(est.getPassword()).decode(),
-            creditos=est.getCreditos(),
-            edad=Fernet(estudiantes.key).decrypt(est.getEdad()).decode(),
-        )
-    return jsonify(carnet="notfound")
+        if contrain == contra:
+            return jsonify(
+                msg="log",
+                carnet=Fernet(estudiantes.key).decrypt(est.getCarnet()).decode(),
+                DPI=Fernet(estudiantes.key).decrypt(est.getDPI()).decode(),
+                nombre=Fernet(estudiantes.key).decrypt(est.getNombre()).decode(),
+                carrera=est.getCarrera(),
+                correo=Fernet(estudiantes.key).decrypt(est.getCorreo()).decode(),
+                password=Fernet(estudiantes.key).decrypt(est.getPassword()).decode(),
+                creditos=est.getCreditos(),
+                edad=Fernet(estudiantes.key).decrypt(est.getEdad()).decode(),
+            )
+        return jsonify(msg="Contraseña incorrecta!")
+    return jsonify(msg="El estudiante no exite!")
 
 
 @app.route("/users", methods=["POST"])
@@ -364,6 +370,7 @@ def users():
     data = request.json
     for estudiante in data["estudiantes"]:
         if estudiantes.key:
+            contra = hashlib.sha256(estudiante["password"].encode())
             est = Estudiante(
                 int(estudiante["carnet"]),
                 Fernet(estudiantes.key).encrypt(str(estudiante["carnet"]).encode()),
@@ -371,7 +378,7 @@ def users():
                 Fernet(estudiantes.key).encrypt(estudiante["nombre"].encode()),
                 estudiante["carrera"],
                 Fernet(estudiantes.key).encrypt(estudiante["correo"].encode()),
-                Fernet(estudiantes.key).encrypt(estudiante["password"].encode()),
+                Fernet(estudiantes.key).encrypt(contra.hexdigest().encode()),
                 str(estudiante["creditos"]),
                 Fernet(estudiantes.key).encrypt(str(estudiante["edad"]).encode()),
             )

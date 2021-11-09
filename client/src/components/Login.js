@@ -9,8 +9,8 @@ function Login(props) {
 	const history = useHistory();
 	const [user, setUser] = useState({ userName: '', password: '' });
 
-	const fetchUser = async (carnet) => {
-		const res = await fetch(`http://localhost:3000/user/${carnet}`);
+	const fetchUser = async (carnet, password) => {
+		const res = await fetch(`http://localhost:3000/user/${carnet}/${password}`);
 		return await res.json();
 	};
 
@@ -34,28 +34,24 @@ function Login(props) {
 				history.push('/dashboard');
 			}
 		} else {
-			fetchUser(user.userName).then((value) => {
-				if (value.carnet !== 'notfound') {
-					if (value.password === user.password) {
-						props.account({
-							carnet: value.carnet,
-							DPI: value.DPI,
-							nombre: value.nombre,
-							carrera: value.carrera,
-							correo: value.correo,
-							password: value.password,
-							creditos: value.creditos,
-							edad: value.edad,
-						})
-						props.isLoggedIn(true);
-						const account = JSON.stringify(user);
-						localStorage.setItem('account', account);
-						history.push('/dashboard');
-					} else {
-						alert('contraseña incorrecta!');
-					}
+			fetchUser(user.userName, user.password).then((value) => {
+				if (value.msg === 'log') {
+					props.account({
+						carnet: value.carnet,
+						DPI: value.DPI,
+						nombre: value.nombre,
+						carrera: value.carrera,
+						correo: value.correo,
+						password: value.password,
+						creditos: value.creditos,
+						edad: value.edad,
+					});
+					props.isLoggedIn(true);
+					const account = JSON.stringify(user);
+					localStorage.setItem('account', account);
+					history.push('/dashboard');
 				} else {
-					alert('No se ha registrado un usuario con ese carnet');
+					alert(value.msg);
 				}
 			});
 		}

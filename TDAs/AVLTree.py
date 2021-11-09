@@ -184,7 +184,7 @@ class AVLTree():
         if tmp:
             cad = f'\nnodo{tmp.getData()} [label="IZQ* | {Fernet(self.key).decrypt(tmp.getCarnet()).decode()}'
             cad += f'\\n{Fernet(self.key).decrypt(tmp.getCorreo()).decode()}'
-            cad += f'\\n{Fernet(self.key).decrypt(tmp.getPassword()).decode()} | DER*"]'
+            cad += f'\\n{Fernet(self.key).decrypt(tmp.getPassword()).decode()[:6]} | DER*"]'
             cadenas.append(cad)
             if tmp.getLeft() is not None:
                 cadenas.append(f'\nnodo{tmp.getData()} -> nodo{tmp.getLeft().getData()};')
